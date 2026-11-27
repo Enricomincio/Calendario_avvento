@@ -1,1 +1,1994 @@
-<h1>Sorpresa in arrivo...</h1>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b2b1d" />
+  <title>Il Nostro Dicembre • Calendario dell'Avvento & Compleanno</title>
+
+  <!-- Font eleganti: Playfair Display, Montserrat, Great Vibes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* ==========================================================================
+       1. VARIABILI DI DESIGN & TEMI (NATALE VERDE BOSCO / COMPLEANNO BLU NOTTE)
+       ========================================================================== */
+    :root {
+      --bg-xmas-center: #12422d;
+      --bg-xmas-main: #0b2b1d;
+      --bg-xmas-deep: #061910;
+
+      --bg-bday-center: #1d2147;
+      --bg-bday-main: #101226;
+      --bg-bday-deep: #080914;
+
+      --gold-light: #f6e29c;
+      --gold-main: #d4af37;
+      --champagne: #e8c872;
+      --cream-warm: #f5ebd9;
+      --red-xmas: #b8291d;
+      --sand-beige: #d8bfa0;
+      --choco-brown: #522418;
+      --text-dark: #3b170e;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background-color: var(--bg-xmas-main);
+      color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      overflow-x: hidden;
+      transition: background-color 0.7s ease;
+    }
+
+    body.theme-birthday {
+      background-color: var(--bg-bday-main);
+    }
+
+    /* Sfondo radiale dinamico */
+    #ambient-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 24%, var(--bg-xmas-center) 0%, var(--bg-xmas-main) 55%, var(--bg-xmas-deep) 100%);
+      transition: opacity 0.6s ease;
+    }
+
+    #ambient-backdrop-bday {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 24%, var(--bg-bday-center) 0%, var(--bg-bday-main) 58%, var(--bg-bday-deep) 100%);
+      opacity: 0;
+      transition: opacity 0.65s ease;
+    }
+
+    body.theme-birthday #ambient-backdrop-bday {
+      opacity: 1;
+    }
+
+    /* Canvas particelle (neve per Natale, stelline per Compleanno) */
+    #particles-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Canvas coriandoli dorati celebrativi (giorno 27) */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 70;
+    }
+
+    .font-serif-display {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    .font-script {
+      font-family: 'Great Vibes', cursive;
+    }
+
+    /* ==========================================================================
+       2. GESTIONE ISOLATA DELLE 4 VISTE (ZERO SOVRAPPOSIZIONI)
+       ========================================================================== */
+    .app-view {
+      display: none;
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      width: 100%;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .app-view.is-active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-view.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .view-door-layout {
+      align-items: center;
+      justify-content: center;
+      padding: calc(1.5rem + env(safe-area-inset-top)) 1.25rem calc(2rem + env(safe-area-inset-bottom)) 1.25rem;
+    }
+
+    .view-grid-layout {
+      padding: calc(3.6rem + env(safe-area-inset-top)) 0.85rem calc(3.25rem + env(safe-area-inset-bottom)) 0.85rem;
+    }
+
+    /* ==========================================================================
+       3. PORTA 1: NATALE (VERDE BOSCO & ROSSO CLASSICO)
+       ========================================================================== */
+    .door-arch-frame {
+      position: relative;
+      width: min(230px, 64vw);
+      height: min(335px, 48vh);
+      min-height: 280px;
+      border-radius: 999px 999px 14px 14px;
+      background: #f6efe2;
+      padding: 9px 9px 0 9px;
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.55),
+        0 0 35px rgba(212, 175, 55, 0.16);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .door-arch-frame:hover {
+      transform: translateY(-3px) scale(1.015);
+    }
+
+    .door-arch-frame:active {
+      transform: scale(0.985);
+    }
+
+    .door-interior-glow {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 999px 999px 6px 6px;
+      background: radial-gradient(circle at 50% 45%, #fffbe6 0%, #f7d97e 45%, #d99b26 100%);
+      box-shadow: inset 0 0 30px rgba(255, 245, 190, 0.95);
+      perspective: 1100px;
+      overflow: hidden;
+    }
+
+    .door-interior-glow::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.92) 0%, transparent 72%);
+      opacity: 0;
+      transition: opacity 0.65s ease;
+    }
+
+    .door-arch-frame.is-open .door-interior-glow::after {
+      opacity: 1;
+    }
+
+    .door-leaf-single {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px 999px 6px 6px;
+      background: linear-gradient(165deg, #c22e22 0%, #9e1e14 60%, #7d140c 100%);
+      border: 2px solid rgba(255, 255, 255, 0.22);
+      transform-origin: left center;
+      transform-style: preserve-3d;
+      transform: rotateY(0deg);
+      transition: transform 0.95s cubic-bezier(0.32, 0.04, 0.22, 1), filter 0.65s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 1.3rem;
+      box-shadow: inset -6px 0 18px rgba(0, 0, 0, 0.28);
+    }
+
+    .door-leaf-single::before {
+      content: "";
+      position: absolute;
+      inset: 14px 14px 16px 14px;
+      border-radius: 999px 999px 4px 4px;
+      border: 1.5px solid rgba(246, 239, 226, 0.28);
+      pointer-events: none;
+    }
+
+    .door-arch-frame.is-open .door-leaf-single {
+      transform: rotateY(-108deg);
+      filter: brightness(0.84);
+    }
+
+    .door-nameplate {
+      margin-top: 0.7rem;
+      background: #f7efe2;
+      color: #9e1e14;
+      padding: 0.4rem 1.2rem;
+      border-radius: 4px;
+      box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.28),
+        inset 0 0 0 1.5px rgba(158, 30, 20, 0.22);
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 0.02em;
+      max-width: 82%;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .door-knob {
+      position: absolute;
+      right: 16px;
+      top: 56%;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff3b8, #d4af37 65%, #8c6614 100%);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.45);
+    }
+
+    /* ==========================================================================
+       4. PORTA 2: COMPLEANNO (BLU NOTTE & ORO CHAMPAGNE)
+       ========================================================================== */
+    .door-bday-frame {
+      position: relative;
+      width: min(240px, 66vw);
+      height: min(340px, 48vh);
+      min-height: 285px;
+      border-radius: 999px 999px 14px 14px;
+      background: linear-gradient(160deg, #f6e29c 0%, #c9a145 55%, #8f6b1e 100%);
+      padding: 9px 9px 0 9px;
+      box-shadow:
+        0 26px 65px rgba(0, 0, 0, 0.65),
+        0 0 42px rgba(232, 200, 114, 0.24);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .door-bday-frame:hover {
+      transform: translateY(-3px) scale(1.015);
+    }
+
+    .door-bday-frame:active {
+      transform: scale(0.985);
+    }
+
+    .door-bday-glow {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 999px 999px 6px 6px;
+      background: radial-gradient(circle at 50% 45%, #fffdf2 0%, #fae39c 45%, #cfa035 100%);
+      box-shadow: inset 0 0 32px rgba(255, 250, 224, 0.95);
+      perspective: 1100px;
+      overflow: hidden;
+    }
+
+    /* Doppia anta elegante per la porta del compleanno */
+    .door-bday-leaf-left,
+    .door-bday-leaf-right {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      background: linear-gradient(170deg, #1e2452 0%, #131636 62%, #0c0e24 100%);
+      border-top: 1.5px solid rgba(246, 226, 156, 0.35);
+      transform-style: preserve-3d;
+      transition: transform 0.95s cubic-bezier(0.32, 0.04, 0.22, 1);
+    }
+
+    .door-bday-leaf-left {
+      left: 0;
+      border-top-left-radius: 999px;
+      border-bottom-left-radius: 6px;
+      border-right: 1px solid rgba(246, 226, 156, 0.45);
+      transform-origin: left center;
+      transform: rotateY(0deg);
+    }
+
+    .door-bday-leaf-right {
+      right: 0;
+      border-top-right-radius: 999px;
+      border-bottom-right-radius: 6px;
+      border-left: 1px solid rgba(246, 226, 156, 0.45);
+      transform-origin: right center;
+      transform: rotateY(0deg);
+    }
+
+    .door-bday-frame.is-open .door-bday-leaf-left {
+      transform: rotateY(-106deg);
+    }
+
+    .door-bday-frame.is-open .door-bday-leaf-right {
+      transform: rotateY(106deg);
+    }
+
+    /* Medaglione centrale sopra le due ante (si dissolve all'apertura) */
+    .door-bday-emblem {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      pointer-events: none;
+      transition: opacity 0.32s ease, transform 0.32s ease;
+    }
+
+    .door-bday-frame.is-open .door-bday-emblem {
+      opacity: 0;
+      transform: scale(0.92);
+    }
+
+    .door-bday-plate {
+      margin-top: 0.75rem;
+      background: rgba(16, 18, 38, 0.92);
+      border: 1.5px solid #e8c872;
+      color: #f6e29c;
+      padding: 0.42rem 1rem;
+      border-radius: 6px;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+      text-align: center;
+    }
+
+    @keyframes gentlePulse {
+      0%, 100% { opacity: 0.68; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(-2px); }
+    }
+
+    .animate-gentle-pulse {
+      animation: gentlePulse 2.4s ease-in-out infinite;
+    }
+
+    /* ==========================================================================
+       5. GRIGLIA BENTO A 12 COLONNE (5 DIMENSIONI ESATTE, ZERO BUCHI)
+       ========================================================================== */
+    .advent-bento-12 {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-auto-rows: clamp(33px, 8.6vw, 48px);
+      grid-auto-flow: dense;
+      gap: 0.45rem;
+      width: 100%;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 640px) {
+      .advent-bento-12 {
+        grid-auto-rows: 54px;
+        gap: 0.65rem;
+      }
+    }
+
+    /* Le 5 dimensioni richieste */
+    .size-small        { grid-column: span 3;  grid-row: span 2; } /* 3x2  (12 caselle) */
+    .size-small-medium { grid-column: span 4;  grid-row: span 2; } /* 4x2  (6 caselle)  */
+    .size-medium       { grid-column: span 6;  grid-row: span 2; } /* 6x2  (5 caselle)  */
+    .size-medium-large { grid-column: span 9;  grid-row: span 4; } /* 9x4  (1 casella)  */
+    .size-large-hero   { grid-column: span 12; grid-row: span 4; } /* 12x4 (1 casella)  */
+
+    /* Finestrella singola (nessuna descrizione o icona rivelatrice) */
+    .advent-tile {
+      position: relative;
+      border: none;
+      border-radius: 12px;
+      padding: 0.55rem 0.65rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      text-align: left;
+      cursor: pointer;
+      overflow: hidden;
+      box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.22);
+      transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s ease;
+      user-select: none;
+    }
+
+    .advent-tile::before {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: 8px;
+      border: 1px dashed currentColor;
+      opacity: 0.16;
+      pointer-events: none;
+    }
+
+    .advent-tile:hover {
+      transform: translateY(-2px) scale(1.012);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.38);
+    }
+
+    .advent-tile:active {
+      transform: scale(0.96);
+    }
+
+    /* Varianti colore natalizie */
+    .theme-cream {
+      background-color: var(--cream-warm);
+      color: var(--text-dark);
+    }
+
+    .theme-red {
+      background-color: var(--red-xmas);
+      color: var(--cream-warm);
+    }
+
+    .theme-sand {
+      background-color: var(--sand-beige);
+      color: var(--text-dark);
+    }
+
+    .theme-choco {
+      background-color: var(--choco-brown);
+      color: var(--cream-warm);
+    }
+
+    .theme-gold-hero {
+      background: linear-gradient(135deg, #ebd07a 0%, #cfa334 52%, #a67a16 100%);
+      color: #ffffff;
+      box-shadow:
+        0 10px 26px rgba(212, 175, 55, 0.32),
+        inset 0 1px 1px rgba(255, 255, 255, 0.55);
+    }
+
+    /* Varianti colore compleanno (26 e 27) */
+    .theme-bday-velvet {
+      background: linear-gradient(145deg, #252b63 0%, #181c45 100%);
+      color: #f6e29c;
+      border: 1px solid rgba(232, 200, 114, 0.35);
+      box-shadow:
+        0 10px 24px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    }
+
+    .theme-bday-champagne {
+      background: linear-gradient(135deg, #f5df96 0%, #d6ad45 55%, #a87e1b 100%);
+      color: #161833;
+      box-shadow:
+        0 12px 28px rgba(232, 200, 114, 0.32),
+        inset 0 1px 1px rgba(255, 255, 255, 0.6);
+    }
+
+    /* Numeri proporzionati alle dimensioni della finestrella */
+    .tile-number {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      z-index: 2;
+    }
+
+    .size-small .tile-number {
+      font-size: clamp(1.35rem, 4.6vw, 1.95rem);
+    }
+
+    .size-small-medium .tile-number {
+      font-size: clamp(1.55rem, 5.2vw, 2.2rem);
+    }
+
+    .size-medium .tile-number {
+      font-size: clamp(1.75rem, 5.8vw, 2.45rem);
+    }
+
+    .size-medium-large .tile-number {
+      font-size: clamp(2.85rem, 9.5vw, 4.1rem);
+    }
+
+    .size-large-hero .tile-number {
+      font-size: clamp(3.1rem, 10.5vw, 4.5rem);
+      text-shadow: 0 2px 10px rgba(92, 62, 6, 0.25);
+    }
+
+    /* Decorazione neutra (fiocco o stellina) in alto a sinistra */
+    .tile-neutral-ornament {
+      position: absolute;
+      top: 7px;
+      left: 8px;
+      font-size: 11px;
+      opacity: 0.34;
+      pointer-events: none;
+      line-height: 1;
+    }
+
+    /* Indicatore discreto in alto a destra (solo spunta dorata se aperto o lucchetto se futuro) */
+    .tile-status-badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 19px;
+      height: 19px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      z-index: 2;
+    }
+
+    .tile-opened-mark {
+      background: rgba(212, 175, 55, 0.26);
+      border: 1px solid currentColor;
+      font-weight: 700;
+      opacity: 0.92;
+    }
+
+    .tile-locked-mark {
+      opacity: 0.36;
+    }
+
+    @keyframes shakeDoor {
+      0%, 100% { transform: translateX(0); }
+      18% { transform: translateX(-6px) rotate(-1.2deg); }
+      36% { transform: translateX(6px) rotate(1.2deg); }
+      54% { transform: translateX(-4px) rotate(-0.8deg); }
+      72% { transform: translateX(4px) rotate(0.8deg); }
+      90% { transform: translateX(-2px); }
+    }
+
+    .animate-shake {
+      animation: shakeDoor 0.46s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    /* ==========================================================================
+       6. TOAST DI AVVISO & MODALE CONTENUTO (SENZA CATEGORIE)
+       ========================================================================== */
+    #toast-banner {
+      position: fixed;
+      left: 50%;
+      bottom: calc(1.35rem + env(safe-area-inset-bottom));
+      transform: translate(-50%, 130%);
+      z-index: 60;
+      background: rgba(12, 22, 24, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #f8f1e3;
+      border: 1px solid rgba(212, 175, 55, 0.48);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+      padding: 0.78rem 1.25rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      max-width: calc(100vw - 1.75rem);
+      white-space: nowrap;
+      transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #toast-banner.show {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+
+    #day-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 55;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.15rem;
+      background: rgba(4, 12, 14, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    #day-modal.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      position: relative;
+      width: 100%;
+      max-width: 430px;
+      max-height: 86vh;
+      overflow-y: auto;
+      background: linear-gradient(180deg, #fcf7ee 0%, #f4e8d4 100%);
+      color: #2e130b;
+      border-radius: 22px;
+      padding: 1.75rem 1.45rem 1.45rem 1.45rem;
+      border: 2px solid rgba(212, 175, 55, 0.65);
+      box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.65),
+        inset 0 0 0 5px rgba(184, 41, 29, 0.07);
+      transform: scale(0.92) translateY(16px);
+      transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #day-modal.is-open .modal-card {
+      transform: scale(1) translateY(0);
+    }
+
+    /* Cornice Polaroid opzionale per i ricordi fotografici */
+    .polaroid-frame {
+      background: #ffffff;
+      padding: 0.6rem 0.6rem 1.65rem 0.6rem;
+      border-radius: 6px;
+      box-shadow: 0 10px 25px rgba(46, 19, 11, 0.18);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      margin: 0.85rem 0 1rem 0;
+      transform: rotate(-1.2deg);
+    }
+
+    .polaroid-frame img {
+      width: 100%;
+      max-height: 240px;
+      object-fit: cover;
+      border-radius: 3px;
+      display: block;
+    }
+
+    .modal-ticket-box {
+      background: rgba(212, 175, 55, 0.14);
+      border: 1.5px dashed #b88a1e;
+      border-radius: 14px;
+      padding: 0.85rem 1rem;
+      margin-top: 1.05rem;
+      color: #4a2012;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sfondi ambientali separati per transizione morbida -->
+  <div id="ambient-backdrop" aria-hidden="true"></div>
+  <div id="ambient-backdrop-bday" aria-hidden="true"></div>
+
+  <!-- Canvas neve / stelline -->
+  <canvas id="particles-canvas" aria-hidden="true"></canvas>
+
+  <!-- Canvas coriandoli dorati (giorno 27) -->
+  <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+  <!-- Pulsante audio atmosfera -->
+  <button
+    id="sound-toggle"
+    type="button"
+    aria-label="Attiva o disattiva effetti sonori"
+    class="fixed top-3.5 right-3.5 z-40 w-10 h-10 rounded-full bg-black/30 hover:bg-black/45 border border-[#d4af37]/35 text-[#f6e29c] flex items-center justify-center backdrop-blur-sm transition active:scale-95"
+    title="Suoni"
+  >
+    <svg id="icon-sound-on" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" />
+    </svg>
+    <svg id="icon-sound-off" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6" />
+    </svg>
+  </button>
+
+  <!-- ========================================================================
+       VISTA 1: PORTA 1 — NATALE (1 - 25 DICEMBRE)
+       ======================================================================== -->
+  <section id="view-door-xmas" class="app-view view-door-layout is-active is-visible" aria-label="Ingresso Calendario dell'Avvento">
+    <div class="text-center mb-6 px-2">
+      <p id="door1-eyebrow" class="text-[11px] sm:text-xs font-semibold tracking-[0.28em] uppercase text-[#e5c158] mb-2">
+        DICEMBRE È ARRIVATO
+      </p>
+      <h1 id="door1-headline" class="font-serif-display text-3xl sm:text-4xl font-bold text-white tracking-tight drop-shadow">
+        Qualcuno ti aspetta dentro
+      </h1>
+    </div>
+
+    <div
+      id="interactive-door-xmas"
+      role="button"
+      tabindex="0"
+      aria-label="Tocca per aprire la porta dell'Avvento"
+      class="door-arch-frame"
+    >
+      <div class="door-interior-glow">
+        <div class="door-leaf-single">
+          <!-- Ghirlanda natalizia SVG -->
+          <svg class="w-24 h-24 sm:w-28 sm:h-28 drop-shadow-md" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="60" cy="60" r="36" stroke="#144528" stroke-width="14" />
+            <circle cx="60" cy="60" r="36" stroke="#1f633b" stroke-width="9" stroke-dasharray="8 5" />
+            <circle cx="60" cy="60" r="36" stroke="#2e8550" stroke-width="5" stroke-dasharray="4 7" stroke-dashoffset="3" />
+            <g fill="#257344">
+              <ellipse cx="60" cy="20" rx="5" ry="9" transform="rotate(-15 60 20)" />
+              <ellipse cx="86" cy="31" rx="5" ry="9" transform="rotate(35 86 31)" />
+              <ellipse cx="99" cy="60" rx="5" ry="9" transform="rotate(85 99 60)" />
+              <ellipse cx="86" cy="89" rx="5" ry="9" transform="rotate(135 86 89)" />
+              <ellipse cx="60" cy="100" rx="5" ry="9" transform="rotate(175 60 100)" />
+              <ellipse cx="34" cy="89" rx="5" ry="9" transform="rotate(-135 34 89)" />
+              <ellipse cx="21" cy="60" rx="5" ry="9" transform="rotate(-85 21 60)" />
+              <ellipse cx="34" cy="31" rx="5" ry="9" transform="rotate(-35 34 31)" />
+            </g>
+            <circle cx="60" cy="24" r="3.5" fill="#d92b2b" />
+            <circle cx="66" cy="26" r="3" fill="#ff4747" />
+            <circle cx="92" cy="48" r="3.5" fill="#d92b2b" />
+            <circle cx="94" cy="54" r="2.8" fill="#ff4747" />
+            <circle cx="82" cy="88" r="3.5" fill="#d92b2b" />
+            <circle cx="77" cy="92" r="2.8" fill="#ff4747" />
+            <circle cx="38" cy="88" r="3.5" fill="#d92b2b" />
+            <circle cx="27" cy="52" r="3.5" fill="#d92b2b" />
+            <circle cx="30" cy="46" r="2.8" fill="#ff4747" />
+            <path d="M52 94 L60 88 L68 94 L64 103 L60 96 L56 103 Z" fill="#e5c158" />
+            <circle cx="60" cy="91" r="3.2" fill="#f7e39c" />
+          </svg>
+
+          <div id="door1-name-label" class="door-nameplate">
+            Amore mio
+          </div>
+
+          <div class="door-knob"></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="mt-6 text-xs sm:text-sm tracking-widest uppercase text-[#f5ebd9]/85 font-medium animate-gentle-pulse">
+      Tocca per entrare
+    </p>
+  </section>
+
+  <!-- ========================================================================
+       VISTA 2: GRIGLIA AVVENTO (1 - 25 DICEMBRE, 12 COLONNE, ZERO ANTICIPAZIONI)
+       ======================================================================== -->
+  <main id="view-grid-xmas" class="app-view view-grid-layout" aria-label="Calendario dell'Avvento 1-25 Dicembre">
+    <!-- Banner Modalità Anteprima -->
+    <div id="preview-bar-xmas" class="hidden w-full max-w-[780px] mx-auto mb-5 px-4 py-2.5 rounded-xl bg-[#d4af37]/20 border border-[#d4af37]/50 text-[#f8e6a8] text-xs sm:text-sm flex flex-wrap items-center justify-between gap-2">
+      <span>✨ <strong>Modalità Anteprima attiva:</strong> tutte le 27 finestrelle sono sbloccate.</span>
+      <button type="button" class="reset-opened-trigger underline font-semibold hover:text-white transition py-1">
+        Azzera
+      </button>
+    </div>
+
+    <header class="w-full max-w-[680px] mx-auto text-center mb-7 sm:mb-8 px-2">
+      <p id="cal1-eyebrow" class="text-[11px] sm:text-xs font-semibold tracking-[0.42em] uppercase text-[#e5c158] mb-2">
+        P E R &nbsp; T E
+      </p>
+      <h2 id="cal1-title" class="font-serif-display text-4xl sm:text-5xl font-bold text-white tracking-tight mb-3.5">
+        Il nostro Dicembre
+      </h2>
+      <p id="cal1-dedication" class="text-sm sm:text-base leading-relaxed text-[#f5ebd9]/90 font-normal max-w-[540px] mx-auto">
+        Venticinque giorni, venticinque piccoli pezzi di noi. Una finestrella ogni mattina, senza sbirciare prima del tempo. Ti amo.
+      </p>
+      <p id="cal1-signature" class="font-script text-3xl sm:text-4xl text-[#e5c158] mt-2.5">
+        Con tutto il mio amore ❤️
+      </p>
+    </header>
+
+    <!-- Griglia Bento 12 colonne -->
+    <div id="advent-grid-xmas" class="advent-bento-12" role="list"></div>
+
+    <!-- Invito al secondo capitolo (26 & 27 Dicembre) -->
+    <div class="w-full max-w-[780px] mx-auto mt-8 p-5 rounded-2xl bg-white/[0.06] border border-[#e8c872]/30 text-center backdrop-blur-sm">
+      <p class="text-[11px] uppercase tracking-[0.26em] text-[#f6e29c] font-semibold mb-1.5">
+        Non finisce il 25...
+      </p>
+      <p class="text-sm text-[#f5ebd9]/85 mb-4 max-w-[440px] mx-auto">
+        Quando il Natale sarà passato, c'è un'altra porta riservata solo a te.
+      </p>
+      <button
+        id="go-to-bday-door-btn"
+        type="button"
+        class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-gradient-to-r from-[#e8c872] to-[#cfa334] text-[#141733] font-bold text-xs sm:text-sm tracking-wide shadow-lg hover:brightness-105 active:scale-95 transition cursor-pointer"
+      >
+        <span>✨ Vai alla seconda porta</span>
+      </button>
+    </div>
+
+    <!-- Footer discreto con Modalità Anteprima -->
+    <footer class="w-full max-w-[780px] mx-auto mt-8 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/55 px-1">
+      <p class="opened-counter-text tracking-wide">
+        Finestrelle custodite: <span class="text-[#e5c158] font-semibold">0 / 27</span>
+      </p>
+
+      <div class="flex flex-wrap items-center justify-center gap-2.5">
+        <button
+          id="back-to-xmas-door-btn"
+          type="button"
+          class="px-3 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white/75 transition"
+        >
+          🚪 Porta 1
+        </button>
+
+        <button
+          type="button"
+          class="preview-toggle-trigger px-3.5 py-2 rounded-full bg-white/10 hover:bg-white/15 border border-[#d4af37]/35 text-[#f3dc92] font-medium transition"
+        >
+          Modalità Anteprima (Test)
+        </button>
+
+        <button
+          type="button"
+          class="reset-opened-trigger px-3 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 transition"
+        >
+          Azzera
+        </button>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ========================================================================
+       VISTA 3: PORTA 2 — COMPLEANNO (26 & 27 DICEMBRE, BLU NOTTE & ORO CHAMPAGNE)
+       ======================================================================== -->
+  <section id="view-door-bday" class="app-view view-door-layout" aria-label="Ingresso Seconda Porta 26 e 27 Dicembre">
+    <!-- Tasto ritorno rapido al calendario natalizio -->
+    <button
+      id="back-to-xmas-from-door2-btn"
+      type="button"
+      class="fixed top-3.5 left-3.5 z-40 px-3.5 py-2 rounded-full bg-black/30 hover:bg-black/45 border border-[#e8c872]/35 text-[#f6e29c] text-xs font-medium backdrop-blur-sm transition active:scale-95"
+    >
+      ← Calendario 1–25
+    </button>
+
+    <div class="text-center mb-6 px-2">
+      <p id="door2-eyebrow" class="text-[11px] sm:text-xs font-semibold tracking-[0.28em] uppercase text-[#e8c872] mb-2">
+        UN CAPITOLO SPECIALE
+      </p>
+      <h2 id="door2-headline" class="font-serif-display text-3xl sm:text-4xl font-bold text-white tracking-tight drop-shadow">
+        Oltre il Natale
+      </h2>
+    </div>
+
+    <div
+      id="interactive-door-bday"
+      role="button"
+      tabindex="0"
+      aria-label="Tocca per aprire la porta del 26 e 27 dicembre"
+      class="door-bday-frame"
+    >
+      <div class="door-bday-glow">
+        <div class="door-bday-leaf-left"></div>
+        <div class="door-bday-leaf-right"></div>
+
+        <!-- Emblema centrale neutro con stelle e targhetta -->
+        <div class="door-bday-emblem">
+          <svg class="w-20 h-20 sm:w-24 sm:h-24 drop-shadow" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="50" cy="50" r="34" stroke="#e8c872" stroke-width="1.5" stroke-dasharray="4 4" />
+            <path d="M50 18 L54 38 L74 42 L54 46 L50 66 L46 46 L26 42 L46 38 Z" fill="#f6e29c" />
+            <circle cx="31" cy="27" r="2.2" fill="#e8c872" />
+            <circle cx="70" cy="26" r="2" fill="#e8c872" />
+            <circle cx="69" cy="64" r="2.4" fill="#e8c872" />
+            <circle cx="32" cy="63" r="1.8" fill="#e8c872" />
+          </svg>
+
+          <div id="door2-name-label" class="door-bday-plate">
+            26 &amp; 27 Dicembre
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="mt-6 text-xs sm:text-sm tracking-widest uppercase text-[#f6e29c]/85 font-medium animate-gentle-pulse">
+      Tocca per aprire
+    </p>
+  </section>
+
+  <!-- ========================================================================
+       VISTA 4: GRIGLIA COMPLEANNO (GIORNI 26 & 27, ZERO ANTICIPAZIONI)
+       ======================================================================== -->
+  <section id="view-grid-bday" class="app-view view-grid-layout" aria-label="Finestrelle 26 e 27 Dicembre">
+    <!-- Banner Modalità Anteprima -->
+    <div id="preview-bar-bday" class="hidden w-full max-w-[680px] mx-auto mb-5 px-4 py-2.5 rounded-xl bg-[#e8c872]/15 border border-[#e8c872]/45 text-[#f6e29c] text-xs sm:text-sm flex flex-wrap items-center justify-between gap-2">
+      <span>✨ <strong>Modalità Anteprima attiva:</strong> anche il 26 e 27 sono sbloccati.</span>
+      <button type="button" class="reset-opened-trigger underline font-semibold hover:text-white transition py-1">
+        Azzera
+      </button>
+    </div>
+
+    <header class="w-full max-w-[640px] mx-auto text-center mb-8 px-2">
+      <p id="cal2-eyebrow" class="text-[11px] sm:text-xs font-semibold tracking-[0.38em] uppercase text-[#e8c872] mb-2">
+        U L T I M I &nbsp; D U E &nbsp; G I O R N I
+      </p>
+      <h2 id="cal2-title" class="font-serif-display text-3xl sm:text-5xl font-bold text-white tracking-tight mb-3.5">
+        Il gran finale
+      </h2>
+      <p id="cal2-dedication" class="text-sm sm:text-base leading-relaxed text-[#f6e29c]/85 max-w-[500px] mx-auto">
+        Due ultime finestrelle custodite per te, quando tutte le altre si sono già chiuse.
+      </p>
+    </header>
+
+    <!-- Due finestrelle pulite (solo numero + stellina neutra) -->
+    <div id="advent-grid-bday" class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-[640px] mx-auto px-1" role="list"></div>
+
+    <!-- Navigazione di ritorno -->
+    <div class="w-full max-w-[640px] mx-auto mt-9 flex flex-wrap items-center justify-center gap-3">
+      <button
+        id="back-to-bday-door-btn"
+        type="button"
+        class="px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/15 border border-[#e8c872]/35 text-[#f6e29c] text-xs sm:text-sm font-medium transition"
+      >
+        ✨ Rivedi la seconda porta
+      </button>
+
+      <button
+        id="back-to-xmas-grid-btn"
+        type="button"
+        class="px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/10 text-white/80 text-xs sm:text-sm font-medium transition"
+      >
+        ← Torna al Calendario 1–25
+      </button>
+    </div>
+
+    <!-- Footer discreto con Modalità Anteprima -->
+    <footer class="w-full max-w-[640px] mx-auto mt-9 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/55 px-1">
+      <p class="opened-counter-text tracking-wide">
+        Finestrelle custodite: <span class="text-[#e8c872] font-semibold">0 / 27</span>
+      </p>
+
+      <div class="flex items-center gap-2.5">
+        <button
+          type="button"
+          class="preview-toggle-trigger px-3.5 py-2 rounded-full bg-white/10 hover:bg-white/15 border border-[#e8c872]/35 text-[#f6e29c] font-medium transition"
+        >
+          Modalità Anteprima (Test)
+        </button>
+
+        <button
+          type="button"
+          class="reset-opened-trigger px-3 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 transition"
+        >
+          Azzera
+        </button>
+      </div>
+    </footer>
+  </section>
+
+  <!-- ========================================================================
+       MODALE CONTENUTO DEL GIORNO (NESSUNA ETICHETTA DI CATEGORIA)
+       ======================================================================== -->
+  <div id="day-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <button
+        id="modal-close-x"
+        type="button"
+        aria-label="Chiudi finestra"
+        class="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-[#3b170e]/10 hover:bg-[#3b170e]/20 text-[#3b170e] flex items-center justify-center transition"
+      >
+        ✕
+      </button>
+
+      <!-- Solo la data del giorno (nessuna categoria) -->
+      <div class="mb-3 pr-8">
+        <span id="modal-day-pill" class="inline-block px-3.5 py-1 rounded-full bg-[#b8291d] text-[#f5ebd9] text-xs font-bold tracking-wider uppercase">
+          Giorno 1 Dicembre
+        </span>
+      </div>
+
+      <!-- Titolo poetico della giornata -->
+      <h3 id="modal-title" class="font-serif-display text-2xl sm:text-3xl font-bold text-[#3b170e] leading-snug mb-3">
+        Titolo del giorno
+      </h3>
+
+      <!-- Divisore ornamentale -->
+      <div class="flex items-center gap-2 my-3 opacity-45">
+        <span class="h-[1px] flex-1 bg-[#8c5a2b]"></span>
+        <span id="modal-ornament-icon" class="text-xs text-[#8c5a2b]">❄</span>
+        <span class="h-[1px] flex-1 bg-[#8c5a2b]"></span>
+      </div>
+
+      <!-- Cornice Polaroid (visibile solo se è presente fotoUrl) -->
+      <figure id="modal-polaroid-wrapper" class="polaroid-frame hidden">
+        <img id="modal-polaroid-img" src="" alt="Un nostro ricordo insieme" />
+      </figure>
+
+      <!-- Testo personalizzato -->
+      <p id="modal-body" class="text-[15px] sm:text-base leading-relaxed text-[#3b170e]/90 whitespace-pre-line">
+        Messaggio del giorno...
+      </p>
+
+      <!-- Riquadro speciale opzionale (indizio o buono, senza etichetta di categoria) -->
+      <div id="modal-extra-box" class="modal-ticket-box hidden">
+        <p id="modal-extra-text" class="font-medium"></p>
+      </div>
+
+      <button
+        id="modal-save-btn"
+        type="button"
+        class="mt-6 w-full py-3.5 px-5 rounded-xl bg-[#b8291d] hover:bg-[#9c2016] active:scale-[0.99] text-[#f5ebd9] font-semibold text-sm tracking-wide shadow-lg transition cursor-pointer"
+      >
+        Chiudi e custodisci ❤️
+      </button>
+    </div>
+  </div>
+
+  <!-- Banner Toast in basso per giorni futuri -->
+  <div id="toast-banner" role="status" aria-live="polite">
+    <span>🔒</span>
+    <span id="toast-text">Questa finestrella si apre il 1 dicembre.</span>
+  </div>
+
+  <!-- ========================================================================
+       SCRIPT APPLICATIVO
+       ======================================================================== -->
+  <script>
+    /**
+     * ==========================================================================
+     * 1. PERSONALIZZAZIONE TESTI PRINCIPALI
+     * ==========================================================================
+     */
+    const CONFIGURAZIONE = {
+      nomeSullaPorta: "Amore mio",
+
+      // Porta 1 (Natale)
+      porta1Sopra: "DICEMBRE È ARRIVATO",
+      porta1Titolo: "Qualcuno ti aspetta dentro",
+      cal1Sopra: "P E R   T E",
+      cal1Titolo: "Il nostro Dicembre",
+      cal1Dedica:
+        "Venticinque giorni, venticinque piccoli pezzi di noi. Una finestrella ogni mattina, senza sbirciare prima del tempo. Ti amo.",
+      cal1Firma: "Con tutto il mio amore ❤️",
+
+      // Porta 2 (Compleanno 26 & 27)
+      porta2Sopra: "UN CAPITOLO SPECIALE",
+      porta2Titolo: "Oltre il Natale",
+      porta2Targhetta: "26 & 27 Dicembre",
+      cal2Sopra: "U L T I M I   D U E   G I O R N I",
+      cal2Titolo: "Il gran finale",
+      cal2Dedica:
+        "Due ultime finestrelle custodite per te, quando tutte le altre si sono già chiuse."
+    };
+
+    /**
+     * ==========================================================================
+     * 2. CONTENUTI DEI 27 GIORNI (1 - 27 DICEMBRE)
+     * ==========================================================================
+     * Nota: Nessuna categoria viene mostrata all'utente.
+     * Per aggiungere una foto nei giorni 2, 4, 10, 12, 16, 18 inserisci il link
+     * o il percorso dell'immagine nel campo `fotoUrl` (es. "foto/noi1.jpg").
+     */
+    const CONTENUTI_GIORNI = [
+      {
+        giorno: 1,
+        titolo: "Il primo passo di questo mese",
+        fotoUrl: "",
+        messaggio:
+          "Benvenuta nel nostro dicembre. Anche se oggi non siamo vicini, volevo che la tua giornata iniziasse sapendo che il mio pensiero è già lì con te.\n\nHo lasciato qualcosa per te prima di partire...",
+        notaExtra: "🔍 Indizio: Guarda nel posto in cui tieni le tue cose più care vicino al letto!"
+      },
+      {
+        giorno: 2,
+        titolo: "Dove tutto è iniziato",
+        fotoUrl: "",
+        messaggio:
+          "Ripenso spesso ai nostri inizi, a quando ancora non sapevo che saresti diventata il mio posto preferito al mondo. Se potessi tornare indietro, ti sceglierei altre mille volte.",
+        notaExtra: ""
+      },
+      {
+        giorno: 3,
+        titolo: "Quello che amo di te",
+        fotoUrl: "",
+        messaggio:
+          "Amo il modo in cui ti illuminano gli occhi quando parli di ciò che ti appassiona, la tua dolcezza improvvisa e il modo in cui riesci a farmi sentire a casa ovunque siamo.",
+        notaExtra: ""
+      },
+      {
+        giorno: 4,
+        titolo: "Meno uno per rivederci",
+        fotoUrl: "",
+        messaggio:
+          "Questi primi giorni lontani sono quasi finiti. Guardo questo nostro momento e conto le ore che mancano a domani per stringerti forte.",
+        notaExtra: ""
+      },
+      {
+        giorno: 5,
+        titolo: "Finalmente di nuovo insieme",
+        fotoUrl: "",
+        messaggio:
+          "Oggi non servono tante parole perché finalmente posso guardarti dal vivo. Ho portato una piccola dolcezza per festeggiare il fatto che sei di nuovo qui accanto a me.",
+        notaExtra: "✨ Chiedimi subito quello che ho in tasca per te!"
+      },
+      {
+        giorno: 6,
+        titolo: "Un pensiero che non appassisce",
+        fotoUrl: "",
+        messaggio:
+          "I fiori veri sono bellissimi, ma volevo regalarti qualcosa fatto con le mie mani che potesse restare con te nel tempo, proprio come quello che provo per te.",
+        notaExtra: "✨ Ho una sorpresa fatta a mano da consegnarti oggi!"
+      },
+      {
+        giorno: 7,
+        titolo: "La nostra colonna sonora",
+        fotoUrl: "",
+        messaggio:
+          "Ci sono parole e melodie che, appena partono, hanno subito il tuo nome. Sei la parte più bella di ogni mia giornata.",
+        notaExtra: ""
+      },
+      {
+        giorno: 8,
+        titolo: "Aria di festa insieme",
+        fotoUrl: "",
+        messaggio:
+          "L'8 dicembre accende ufficialmente la magia delle feste, e viverla accanto a te la rende ancora più luminosa. Oggi ci concediamo una piccola coccola dolce.",
+        notaExtra: "✨ C'è una dolcezza natalizia pronta per te!"
+      },
+      {
+        giorno: 9,
+        titolo: "Creato apposta per te",
+        fotoUrl: "",
+        messaggio:
+          "Prima che inizino questi giorni in cui ci vedremo un po' meno, ho voluto realizzare qualcosa di unico, pensato e creato su misura per te, così potrai tenerlo vicino quando non ci sono.",
+        notaExtra: "✨ Oggi ho qualcosa di speciale da consegnarti dal vivo!"
+      },
+      {
+        giorno: 10,
+        titolo: "Un posto che parla di noi",
+        fotoUrl: "",
+        messaggio:
+          "Ogni luogo in cui siamo stati insieme ha conservato un pezzetto delle nostre risate. Non vedo l'ora di aggiungerne tanti altri alla nostra mappa.",
+        notaExtra: ""
+      },
+      {
+        giorno: 11,
+        titolo: "Sogni ad occhi aperti",
+        fotoUrl: "",
+        messaggio:
+          "Quando immagino il futuro, i viaggi da fare e i traguardi da raggiungere, la costante più bella è sempre la stessa: esserci insieme.",
+        notaExtra: ""
+      },
+      {
+        giorno: 12,
+        titolo: "Piccoli istanti indimenticabili",
+        fotoUrl: "",
+        messaggio:
+          "Anche a distanza, basta un messaggio o un vecchio ricordo condiviso per strapparmi un sorriso vero in mezzo alla giornata.",
+        notaExtra: ""
+      },
+      {
+        giorno: 13,
+        titolo: "Un abbraccio a distanza",
+        fotoUrl: "",
+        messaggio:
+          "Se oggi senti un po' di stanchezza o nostalgia, chiudi gli occhi un secondo e immagina di avere le mie braccia intorno a te.",
+        notaExtra: ""
+      },
+      {
+        giorno: 14,
+        titolo: "A metà del cammino",
+        fotoUrl: "",
+        messaggio:
+          "Siamo esattamente a metà di questi giorni lontani, ma non sei davvero sola: qualche giorno fa ho nascosto parole scritte a mano tutte per te.",
+        notaExtra: "🔍 Adesso puoi aprire la busta sigillata che avevo lasciato per oggi!"
+      },
+      {
+        giorno: 15,
+        titolo: "La mia persona",
+        fotoUrl: "",
+        messaggio:
+          "Sei la prima persona a cui voglio raccontare una bella notizia e l'unica da cui vorrei correre alla fine di qualsiasi giornata.",
+        notaExtra: ""
+      },
+      {
+        giorno: 16,
+        titolo: "Quella risata incontenibile",
+        fotoUrl: "",
+        messaggio:
+          "Ripensare ai momenti in cui non riuscivamo nemmeno a parlare da quanto stavamo ridendo resta una delle mie medicine preferite.",
+        notaExtra: ""
+      },
+      {
+        giorno: 17,
+        titolo: "Il conto alla rovescia",
+        fotoUrl: "",
+        messaggio:
+          "Manca pochissimo ormai: l'attesa sta per finire e presto torneremo a viverci ogni singolo giorno senza più schermi di mezzo.",
+        notaExtra: ""
+      },
+      {
+        giorno: 18,
+        titolo: "Alla vigilia del nostro giorno",
+        fotoUrl: "",
+        messaggio:
+          "Domani è una data che porto nel cuore. Guardo noi due qui e sono grato per ogni singolo giorno passato al tuo fianco.",
+        notaExtra: ""
+      },
+      {
+        giorno: 19,
+        titolo: "Buon mesiversario, amore mio ❤️",
+        fotoUrl: "",
+        messaggio:
+          "Oggi festeggiamo noi, il nostro tempo insieme e tutto quello che stiamo costruendo passo dopo passo.\n\nDa oggi in poi non ci separiamo più per tutte le feste... e ho portato qualcuno di molto morbido a farti compagnia!",
+        notaExtra: "✨ Guardami negli occhi: ho una sorpresa per il nostro mesiversario!"
+      },
+      {
+        giorno: 20,
+        titolo: "Insieme ogni giorno",
+        fotoUrl: "",
+        messaggio:
+          "Inizia la settimana più bella dell'anno, e la parte migliore è saperci finalmente insieme giorno dopo giorno. Cominciamo con una piccola dolcezza.",
+        notaExtra: "✨ Un piccolo sfizio dolce ti aspetta oggi!"
+      },
+      {
+        giorno: 21,
+        titolo: "La notte più lunga, la luce più bella",
+        fotoUrl: "",
+        messaggio:
+          "Oggi è il solstizio d'inverno: fuori fa freddo, ma basta starti accanto per avere tutto il calore del mondo.",
+        notaExtra: "✨ C'è un'altra piccola coccola dolce per te oggi!"
+      },
+      {
+        giorno: 22,
+        titolo: "A tre passi dal Natale",
+        fotoUrl: "",
+        messaggio:
+          "Tra luci, vetrine e corse dell'ultimo minuto, fermarmi un attimo con te resta l'unico momento che conta davvero.",
+        notaExtra: "✨ Oggi si addolcisce ancora un po' l'attesa!"
+      },
+      {
+        giorno: 23,
+        titolo: "Parole scritte col cuore",
+        fotoUrl: "",
+        messaggio:
+          "Alla vigilia delle feste volevo affidare alla carta tutto quello che a volte a voce non riesco a esprimere fino in fondo.",
+        notaExtra: "✨ Ho una lettera scritta a mano da consegnarti oggi!"
+      },
+      {
+        giorno: 24,
+        titolo: "La magia della Vigilia",
+        fotoUrl: "",
+        messaggio:
+          "Domani è Natale, ma io il regalo più prezioso l'ho già trovato da tempo. Godiamoci questa Vigilia fino all'ultimo minuto.",
+        notaExtra: "✨ L'ultima dolcezza prima di Natale è tutta tua!"
+      },
+      {
+        giorno: 25,
+        titolo: "Buon Natale, amore della mia vita! 🎄",
+        fotoUrl: "",
+        messaggio:
+          "È arrivato il 25 dicembre!\n\nGrazie per aver reso speciale ogni singolo giorno di questo mese e di questo anno. Il mio augurio più grande è di continuare a condividere tutti i nostri prossimi Natali insieme.\n\nOra avvicinati... c'è qualcosa di grande che ti aspetta sotto l'albero!",
+        notaExtra: "✨ È il momento di scartare il tuo regalo di Natale!"
+      },
+      {
+        giorno: 26,
+        titolo: "Un giorno lento solo per noi",
+        fotoUrl: "",
+        messaggio:
+          "Dopo l'emozione di ieri, oggi ci prendiamo una giornata tranquilla, senza fretta e senza impegni: solo noi, un po' di relax e una piccola dolcezza.",
+        notaExtra: "✨ Una coccola dolce per questo Santo Stefano insieme!"
+      },
+      {
+        giorno: 27,
+        titolo: "Buon Compleanno, vita mia! ✨🎂",
+        fotoUrl: "",
+        messaggio:
+          "Eccoci all'ultima finestrella, la più luminosa di tutte: oggi festeggiamo te!\n\nAuguro a te tutta la felicità che porti nella mia vita ogni giorno. Spero che questo piccolo viaggio dal 1° al 27 dicembre ti abbia fatto sentire quanto sei amata.\n\nBuon compleanno amore mio, ora preparati al tuo regalo!",
+        notaExtra: "✨ Tanti auguri! Chiedimi subito il tuo regalo di compleanno!"
+      }
+    ];
+
+    /**
+     * ==========================================================================
+     * 3. DISPOSIZIONE GRIGLIA 12 COLONNE (5 DIMENSIONI ESATTE, ZERO BUCHI)
+     * ==========================================================================
+     * - size-small        (3x2)  -> 12 caselle: 2, 3, 4, 7, 10, 11, 12, 13, 15, 16, 17, 18
+     * - size-small-medium (4x2)  -> 6 caselle:  5, 8, 20, 21, 22, 24
+     * - size-medium       (6x2)  -> 5 caselle:  1, 6, 9, 14, 23
+     * - size-medium-large (9x4)  -> 1 casella:  19 (affiancata a 17 sopra 18 a sinistra 3x4)
+     * - size-large-hero   (12x4) -> 1 casella:  25
+     */
+    const LAYOUT_GRIGLIA_XMAS = [
+      // Riga 1-2 (3 + 6 + 3 = 12)
+      { day: 7,  size: "size-small",        theme: "theme-cream" },
+      { day: 1,  size: "size-medium",       theme: "theme-red" },
+      { day: 2,  size: "size-small",        theme: "theme-sand" },
+
+      // Riga 3-4 (4 + 4 + 4 = 12)
+      { day: 5,  size: "size-small-medium", theme: "theme-sand" },
+      { day: 8,  size: "size-small-medium", theme: "theme-choco" },
+      { day: 20, size: "size-small-medium", theme: "theme-cream" },
+
+      // Riga 5-6 (3 + 3 + 6 = 12)
+      { day: 3,  size: "size-small",        theme: "theme-cream" },
+      { day: 4,  size: "size-small",        theme: "theme-red" },
+      { day: 6,  size: "size-medium",       theme: "theme-sand" },
+
+      // Riga 7-8 (6 + 3 + 3 = 12)
+      { day: 9,  size: "size-medium",       theme: "theme-choco" },
+      { day: 10, size: "size-small",        theme: "theme-cream" },
+      { day: 11, size: "size-small",        theme: "theme-red" },
+
+      // Riga 9-10 (4 + 4 + 4 = 12)
+      { day: 21, size: "size-small-medium", theme: "theme-red" },
+      { day: 22, size: "size-small-medium", theme: "theme-cream" },
+      { day: 24, size: "size-small-medium", theme: "theme-sand" },
+
+      // Riga 11-12 (3 + 6 + 3 = 12)
+      { day: 12, size: "size-small",        theme: "theme-sand" },
+      { day: 14, size: "size-medium",       theme: "theme-red" },
+      { day: 13, size: "size-small",        theme: "theme-cream" },
+
+      // Riga 13-14 (3 + 3 + 6 = 12)
+      { day: 15, size: "size-small",        theme: "theme-choco" },
+      { day: 16, size: "size-small",        theme: "theme-sand" },
+      { day: 23, size: "size-medium",       theme: "theme-cream" },
+
+      // Riga 15-18 (Sinistra 3x4 = 17 sopra 18 | Destra 9x4 = 19)
+      { day: 17, size: "size-small",        theme: "theme-cream" },
+      { day: 19, size: "size-medium-large", theme: "theme-red" },
+      { day: 18, size: "size-small",        theme: "theme-sand" },
+
+      // Riga 19-22 (12x4 = 25)
+      { day: 25, size: "size-large-hero",   theme: "theme-gold-hero" }
+    ];
+
+    const LAYOUT_GRIGLIA_BDAY = [
+      { day: 26, theme: "theme-bday-velvet" },
+      { day: 27, theme: "theme-bday-champagne" }
+    ];
+
+    /**
+     * ==========================================================================
+     * 4. STATO APPLICATIVO, DATE E NAVIGAZIONE PULITA TRA LE 4 VISTE
+     * ==========================================================================
+     */
+    const STORAGE_KEY_OPENED = "avvento_romantico_27_opened_v2";
+    let openedDays = new Set();
+    let previewMode = false;
+    let soundEnabled = false;
+    let audioCtx = null;
+    let toastTimeout = null;
+    let navigationTimer = null;
+    let currentChapter = "xmas"; // "xmas" | "bday"
+
+    function loadOpenedDays() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_OPENED);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            openedDays = new Set(parsed.map(Number));
+          }
+        }
+      } catch (e) {
+        console.warn("Errore lettura localStorage:", e);
+      }
+    }
+
+    function saveOpenedDays() {
+      try {
+        localStorage.setItem(STORAGE_KEY_OPENED, JSON.stringify([...openedDays]));
+      } catch (e) {
+        console.warn("Errore salvataggio localStorage:", e);
+      }
+    }
+
+    function isDayUnlocked(dayNumber) {
+      if (previewMode) return true;
+      const now = new Date();
+      const month = now.getMonth(); // 11 = Dicembre
+      const date = now.getDate();
+      if (month === 11) {
+        return dayNumber <= date;
+      }
+      return false;
+    }
+
+    /**
+     * Cambio pagina atomico e pulito tra le 4 viste:
+     * cancella eventuali timer pendenti, resetta subito le porte 3D
+     * e imposta il tema atmosferico corretto senza alcuna sovrapposizione.
+     */
+    function switchView(viewId) {
+      if (navigationTimer) {
+        clearTimeout(navigationTimer);
+        navigationTimer = null;
+      }
+
+      // Reset istantaneo di entrambe le porte 3D
+      const doorXmas = document.getElementById("interactive-door-xmas");
+      const doorBday = document.getElementById("interactive-door-bday");
+      if (doorXmas) doorXmas.classList.remove("is-open");
+      if (doorBday) doorBday.classList.remove("is-open");
+
+      // Aggiorna atmosfera (Natale vs Compleanno)
+      const isBdayView = viewId === "view-door-bday" || viewId === "view-grid-bday";
+      currentChapter = isBdayView ? "bday" : "xmas";
+      document.body.classList.toggle("theme-birthday", isBdayView);
+
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+      if (metaTheme) {
+        metaTheme.setAttribute("content", isBdayView ? "#101226" : "#0b2b1d");
+      }
+
+      // Nascondi subito tutte le viste non attive
+      const allViews = document.querySelectorAll(".app-view");
+      allViews.forEach((v) => {
+        if (v.id !== viewId) {
+          v.classList.remove("is-visible", "is-active");
+        }
+      });
+
+      // Mostra la vista di destinazione
+      const target = document.getElementById(viewId);
+      if (target) {
+        target.classList.add("is-active");
+        window.scrollTo({ top: 0, behavior: "instant" });
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            target.classList.add("is-visible");
+          });
+        });
+      }
+    }
+
+    /**
+     * ==========================================================================
+     * 5. EFFETTI SONORI (WEB AUDIO API)
+     * ==========================================================================
+     */
+    function playChime(type = "open") {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === "suspended") {
+          audioCtx.resume();
+        }
+
+        const now = audioCtx.currentTime;
+        if (type === "locked") {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(190, now);
+          osc.frequency.exponentialRampToValueAtTime(135, now + 0.16);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.17);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.18);
+          return;
+        }
+
+        const notes =
+          type === "birthday"
+            ? [587.33, 739.99, 880, 1174.66, 1479.98]
+            : type === "door"
+            ? [523.25, 659.25, 783.99, 1046.5]
+            : [659.25, 880, 1174.66];
+
+        notes.forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = "triangle";
+          const start = now + idx * 0.065;
+          osc.frequency.setValueAtTime(freq, start);
+          gain.gain.setValueAtTime(0.001, start);
+          gain.gain.linearRampToValueAtTime(0.07, start + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0008, start + 0.65);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(start);
+          osc.stop(start + 0.68);
+        });
+      } catch (e) {
+        // Ignora se audio bloccato
+      }
+    }
+
+    /**
+     * ==========================================================================
+     * 6. RENDERING DELLE GRIGLIE (SOLO NUMERO + DECORAZIONE NEUTRA)
+     * ==========================================================================
+     */
+    function applyCustomTexts() {
+      document.getElementById("door1-eyebrow").textContent = CONFIGURAZIONE.porta1Sopra;
+      document.getElementById("door1-headline").textContent = CONFIGURAZIONE.porta1Titolo;
+      document.getElementById("door1-name-label").textContent = CONFIGURAZIONE.nomeSullaPorta;
+      document.getElementById("cal1-eyebrow").textContent = CONFIGURAZIONE.cal1Sopra;
+      document.getElementById("cal1-title").textContent = CONFIGURAZIONE.cal1Titolo;
+      document.getElementById("cal1-dedication").textContent = CONFIGURAZIONE.cal1Dedica;
+      document.getElementById("cal1-signature").textContent = CONFIGURAZIONE.cal1Firma;
+
+      document.getElementById("door2-eyebrow").textContent = CONFIGURAZIONE.porta2Sopra;
+      document.getElementById("door2-headline").textContent = CONFIGURAZIONE.porta2Titolo;
+      document.getElementById("door2-name-label").textContent = CONFIGURAZIONE.porta2Targhetta;
+      document.getElementById("cal2-eyebrow").textContent = CONFIGURAZIONE.cal2Sopra;
+      document.getElementById("cal2-title").textContent = CONFIGURAZIONE.cal2Titolo;
+      document.getElementById("cal2-dedication").textContent = CONFIGURAZIONE.cal2Dedica;
+    }
+
+    function updateCounters() {
+      document.querySelectorAll(".opened-counter-text").forEach((el) => {
+        el.innerHTML = `Finestrelle custodite: <span class="text-[#e8c872] font-semibold">${openedDays.size} / 27</span>`;
+      });
+    }
+
+    function buildTileButton(dayNum, sizeClass, themeClass, neutralSymbol) {
+      const unlocked = isDayUnlocked(dayNum);
+      const isOpened = openedDays.has(dayNum);
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.setAttribute("role", "listitem");
+      btn.dataset.day = String(dayNum);
+      btn.className = `advent-tile ${sizeClass} ${themeClass}`.trim();
+      btn.setAttribute(
+        "aria-label",
+        unlocked
+          ? `Giorno ${dayNum} dicembre${isOpened ? ", custodito" : ""}`
+          : `Giorno ${dayNum} dicembre, bloccato fino al ${dayNum} dicembre`
+      );
+
+      let badgeHtml = "";
+      if (isOpened) {
+        badgeHtml = `<span class="tile-status-badge tile-opened-mark" aria-hidden="true">✓</span>`;
+      } else if (!unlocked) {
+        badgeHtml = `<span class="tile-status-badge tile-locked-mark" aria-hidden="true">🔒</span>`;
+      }
+
+      // Nessun testo descrittivo, sottotitolo o icona tematica:
+      // solo decorazione neutra + numero del giorno + eventuale lucchetto/spunta.
+      btn.innerHTML = `
+        <span class="tile-neutral-ornament" aria-hidden="true">${neutralSymbol}</span>
+        ${badgeHtml}
+        <span class="tile-number">${dayNum}</span>
+      `;
+
+      btn.addEventListener("click", () => handleTileClick(dayNum, btn));
+      return btn;
+    }
+
+    function renderAllGrids() {
+      // Griglia Avvento 1-25
+      const gridXmas = document.getElementById("advent-grid-xmas");
+      gridXmas.innerHTML = "";
+      LAYOUT_GRIGLIA_XMAS.forEach((slot) => {
+        gridXmas.appendChild(buildTileButton(slot.day, slot.size, slot.theme, "❄"));
+      });
+
+      // Griglia Compleanno 26-27
+      const gridBday = document.getElementById("advent-grid-bday");
+      gridBday.innerHTML = "";
+      LAYOUT_GRIGLIA_BDAY.forEach((slot) => {
+        const btn = buildTileButton(slot.day, "min-h-[124px] sm:min-h-[146px] p-5", slot.theme, "✦");
+        const numEl = btn.querySelector(".tile-number");
+        if (numEl) {
+          numEl.style.fontSize = "clamp(2.6rem, 8.5vw, 3.8rem)";
+        }
+        gridBday.appendChild(btn);
+      });
+
+      updateCounters();
+    }
+
+    /**
+     * ==========================================================================
+     * 7. GESTIONE APERTURA FINESTRELLE, MODALE E CORIANDOLI DORATI (27 DIC)
+     * ==========================================================================
+     */
+    function showToast(message) {
+      const banner = document.getElementById("toast-banner");
+      const textEl = document.getElementById("toast-text");
+      textEl.textContent = message;
+
+      banner.classList.add("show");
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        banner.classList.remove("show");
+      }, 3100);
+    }
+
+    function handleTileClick(dayNum, tileEl) {
+      if (!isDayUnlocked(dayNum)) {
+        tileEl.classList.remove("animate-shake");
+        void tileEl.offsetWidth;
+        tileEl.classList.add("animate-shake");
+
+        playChime("locked");
+        showToast(`Questa finestrella si apre il ${dayNum} dicembre.`);
+        return;
+      }
+
+      if (dayNum === 27) {
+        playChime("birthday");
+        launchGoldenConfetti();
+      } else {
+        playChime("open");
+      }
+
+      openDayModal(dayNum);
+    }
+
+    function openDayModal(dayNum) {
+      const content =
+        CONTENUTI_GIORNI.find((item) => item.giorno === dayNum) || {
+          giorno: dayNum,
+          titolo: `${dayNum} Dicembre`,
+          fotoUrl: "",
+          messaggio: "Un pensiero speciale custodito per te.",
+          notaExtra: ""
+        };
+
+      const isBdayDay = dayNum >= 26;
+      const dayPill = document.getElementById("modal-day-pill");
+      dayPill.textContent = `Giorno ${dayNum} Dicembre`;
+      dayPill.style.backgroundColor = isBdayDay ? "#1a1f4d" : "#b8291d";
+      dayPill.style.color = isBdayDay ? "#f6e29c" : "#f5ebd9";
+
+      document.getElementById("modal-ornament-icon").textContent = isBdayDay ? "✦" : "❄";
+      document.getElementById("modal-title").textContent = content.titolo;
+      document.getElementById("modal-body").textContent = content.messaggio;
+
+      // Foto Polaroid (mostrata solo se fotoUrl è valorizzato e valido)
+      const polaroidWrap = document.getElementById("modal-polaroid-wrapper");
+      const polaroidImg = document.getElementById("modal-polaroid-img");
+      if (content.fotoUrl && content.fotoUrl.trim() !== "") {
+        polaroidImg.src = content.fotoUrl.trim();
+        polaroidImg.onerror = () => polaroidWrap.classList.add("hidden");
+        polaroidWrap.classList.remove("hidden");
+      } else {
+        polaroidWrap.classList.add("hidden");
+        polaroidImg.removeAttribute("src");
+      }
+
+      // Nota extra / indizio senza etichetta di categoria
+      const extraBox = document.getElementById("modal-extra-box");
+      const extraText = document.getElementById("modal-extra-text");
+      if (content.notaExtra && content.notaExtra.trim() !== "") {
+        extraText.textContent = content.notaExtra;
+        extraBox.classList.remove("hidden");
+      } else {
+        extraBox.classList.add("hidden");
+      }
+
+      if (!openedDays.has(dayNum)) {
+        openedDays.add(dayNum);
+        saveOpenedDays();
+        renderAllGrids();
+      }
+
+      document.getElementById("day-modal").classList.add("is-open");
+    }
+
+    function closeDayModal() {
+      document.getElementById("day-modal").classList.remove("is-open");
+    }
+
+    /**
+     * ==========================================================================
+     * 8. COLLEGAMENTO DELLE PORTE 3D E DEI PULSANTI DI NAVIGAZIONE
+     * ==========================================================================
+     */
+    function setupDoorsAndNavigation() {
+      const doorXmas = document.getElementById("interactive-door-xmas");
+      const doorBday = document.getElementById("interactive-door-bday");
+      let doorBusy = false;
+
+      function openXmasDoor() {
+        if (doorBusy) return;
+        doorBusy = true;
+        playChime("door");
+        doorXmas.classList.add("is-open");
+
+        navigationTimer = setTimeout(() => {
+          doorBusy = false;
+          switchView("view-grid-xmas");
+        }, 820);
+      }
+
+      function openBdayDoor() {
+        if (doorBusy) return;
+        doorBusy = true;
+        playChime("birthday");
+        doorBday.classList.add("is-open");
+
+        navigationTimer = setTimeout(() => {
+          doorBusy = false;
+          switchView("view-grid-bday");
+        }, 850);
+      }
+
+      doorXmas.addEventListener("click", openXmasDoor);
+      doorXmas.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openXmasDoor();
+        }
+      });
+
+      doorBday.addEventListener("click", openBdayDoor);
+      doorBday.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openBdayDoor();
+        }
+      });
+
+      // Pulsanti passaggio tra le 4 viste
+      document.getElementById("go-to-bday-door-btn").addEventListener("click", () => {
+        doorBusy = false;
+        switchView("view-door-bday");
+      });
+
+      document.getElementById("back-to-xmas-door-btn").addEventListener("click", () => {
+        doorBusy = false;
+        switchView("view-door-xmas");
+      });
+
+      document.getElementById("back-to-xmas-from-door2-btn").addEventListener("click", () => {
+        doorBusy = false;
+        switchView("view-grid-xmas");
+      });
+
+      document.getElementById("back-to-bday-door-btn").addEventListener("click", () => {
+        doorBusy = false;
+        switchView("view-door-bday");
+      });
+
+      document.getElementById("back-to-xmas-grid-btn").addEventListener("click", () => {
+        doorBusy = false;
+        switchView("view-grid-xmas");
+      });
+    }
+
+    function setupControls() {
+      const previewTriggers = document.querySelectorAll(".preview-toggle-trigger");
+      const resetTriggers = document.querySelectorAll(".reset-opened-trigger");
+      const barXmas = document.getElementById("preview-bar-xmas");
+      const barBday = document.getElementById("preview-bar-bday");
+
+      previewTriggers.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          previewMode = !previewMode;
+          previewTriggers.forEach((b) => {
+            if (previewMode) {
+              b.textContent = "🔓 Anteprima Attiva (Disattiva)";
+              b.classList.add("bg-[#d4af37]/25", "border-[#d4af37]");
+            } else {
+              b.textContent = "Modalità Anteprima (Test)";
+              b.classList.remove("bg-[#d4af37]/25", "border-[#d4af37]");
+            }
+          });
+
+          barXmas.classList.toggle("hidden", !previewMode);
+          barBday.classList.toggle("hidden", !previewMode);
+
+          showToast(
+            previewMode
+              ? "Modalità Anteprima attiva: tutte le finestrelle sono sbloccate."
+              : "Blocco date reali di dicembre ripristinato."
+          );
+          renderAllGrids();
+        });
+      });
+
+      resetTriggers.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          openedDays.clear();
+          saveOpenedDays();
+          renderAllGrids();
+          showToast("Stato delle finestrelle azzerato!");
+        });
+      });
+
+      // Modale
+      document.getElementById("modal-close-x").addEventListener("click", closeDayModal);
+      document.getElementById("modal-save-btn").addEventListener("click", closeDayModal);
+      document.getElementById("day-modal").addEventListener("click", (e) => {
+        if (e.target.id === "day-modal") closeDayModal();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeDayModal();
+      });
+
+      // Audio toggle
+      const soundBtn = document.getElementById("sound-toggle");
+      const iconOn = document.getElementById("icon-sound-on");
+      const iconOff = document.getElementById("icon-sound-off");
+
+      soundBtn.addEventListener("click", () => {
+        soundEnabled = !soundEnabled;
+        iconOn.classList.toggle("hidden", !soundEnabled);
+        iconOff.classList.toggle("hidden", soundEnabled);
+        if (soundEnabled) {
+          playChime("open");
+          showToast("Effetti sonori attivati 🎶");
+        } else {
+          showToast("Effetti sonori disattivati");
+        }
+      });
+    }
+
+    /**
+     * ==========================================================================
+     * 9. CANVAS PARTICELLE (NEVE PER NATALE / STELLINE SCINTILLANTI PER COMPLEANNO)
+     * ==========================================================================
+     */
+    function initAmbientCanvas() {
+      const canvas = document.getElementById("particles-canvas");
+      const ctx = canvas.getContext("2d");
+      let width = 0;
+      let height = 0;
+      let particles = [];
+
+      function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        const count = Math.min(85, Math.max(40, Math.floor((width * height) / 14500)));
+        if (particles.length === 0) {
+          particles = Array.from({ length: count }, () => spawnParticle(true));
+        }
+      }
+
+      function spawnParticle(randomY = false) {
+        return {
+          x: Math.random() * (width || window.innerWidth),
+          y: randomY ? Math.random() * (height || window.innerHeight) : -10,
+          r: Math.random() * 2.1 + 0.8,
+          speedY: Math.random() * 0.6 + 0.22,
+          drift: (Math.random() - 0.5) * 0.3,
+          phase: Math.random() * Math.PI * 2,
+          twinkleSpeed: Math.random() * 0.04 + 0.015,
+          alpha: Math.random() * 0.48 + 0.2
+        };
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.phase += p.twinkleSpeed;
+
+          if (currentChapter === "bday") {
+            // Stelline dorate scintillanti
+            p.y -= p.speedY * 0.25;
+            if (p.y < -10) p.y = height + 10;
+            const twinkleAlpha = 0.25 + ((Math.sin(p.phase) + 1) * 0.35);
+
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.fillStyle = `rgba(246, 226, 156, ${twinkleAlpha.toFixed(2)})`;
+            ctx.beginPath();
+            const size = p.r * 1.45;
+            ctx.moveTo(0, -size * 1.6);
+            ctx.lineTo(size * 0.45, -size * 0.45);
+            ctx.lineTo(size * 1.6, 0);
+            ctx.lineTo(size * 0.45, size * 0.45);
+            ctx.lineTo(0, size * 1.6);
+            ctx.lineTo(-size * 0.45, size * 0.45);
+            ctx.lineTo(-size * 1.6, 0);
+            ctx.lineTo(-size * 0.45, -size * 0.45);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+          } else {
+            // Fiocchi di neve morbidi
+            p.y += p.speedY;
+            p.x += p.drift + Math.sin(p.phase) * 0.22;
+            if (p.y > height + 8) particles[i] = spawnParticle(false);
+            if (p.x > width + 8) p.x = -8;
+            if (p.x < -8) p.x = width + 8;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 250, 240, ${p.alpha})`;
+            ctx.fill();
+          }
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener("resize", resize);
+      resize();
+      animate();
+    }
+
+    /**
+     * ==========================================================================
+     * 10. CORIANDOLI DORATI CELEBRATIVI PER IL GIORNO 27
+     * ==========================================================================
+     */
+    function launchGoldenConfetti() {
+      const canvas = document.getElementById("confetti-canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const palette = ["#f6e29c", "#e8c872", "#d4af37", "#fff5cc", "#f2b880"];
+      const pieces = Array.from({ length: 110 }, () => ({
+        x: canvas.width * (0.15 + Math.random() * 0.7),
+        y: canvas.height * 0.45 + (Math.random() - 0.5) * 90,
+        vx: (Math.random() - 0.5) * 9,
+        vy: -Math.random() * 10 - 3,
+        w: Math.random() * 8 + 5,
+        h: Math.random() * 5 + 3,
+        rot: Math.random() * Math.PI * 2,
+        vRot: (Math.random() - 0.5) * 0.22,
+        color: palette[Math.floor(Math.random() * palette.length)],
+        life: 1
+      }));
+
+      function step() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+
+        for (let i = 0; i < pieces.length; i++) {
+          const c = pieces[i];
+          if (c.life <= 0) continue;
+          active = true;
+
+          c.vy += 0.24;
+          c.vx *= 0.99;
+          c.x += c.vx;
+          c.y += c.vy;
+          c.rot += c.vRot;
+          if (c.y > canvas.height * 0.75) {
+            c.life -= 0.025;
+          }
+
+          ctx.save();
+          ctx.translate(c.x, c.y);
+          ctx.rotate(c.rot);
+          ctx.globalAlpha = Math.max(0, c.life);
+          ctx.fillStyle = c.color;
+          ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
+          ctx.restore();
+        }
+
+        if (active) {
+          requestAnimationFrame(step);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    // Avvio sicuro al caricamento
+    window.addEventListener("load", () => {
+      loadOpenedDays();
+      applyCustomTexts();
+      renderAllGrids();
+      setupDoorsAndNavigation();
+      setupControls();
+      initAmbientCanvas();
+    });
+  </script>
+</body>
+</html>
