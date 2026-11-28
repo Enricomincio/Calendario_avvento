@@ -665,6 +665,61 @@
       display: block;
     }
 
+    /* Riquadro citazione canzone (sopra immagine Spotify) */
+    .spotify-quote-box {
+      background: rgba(29, 185, 84, 0.08);
+      border-left: 3px solid #1db954;
+      border-radius: 8px;
+      padding: 0.75rem 0.95rem;
+      margin-bottom: 0.85rem;
+      font-style: italic;
+      color: #2e130b;
+      font-size: 0.94rem;
+      line-height: 1.5;
+    }
+
+    /* Cornice immagine Spotify (al centro) */
+    .spotify-track-frame {
+      background: #121212;
+      padding: 0.45rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+      margin: 0.65rem 0 0.85rem 0;
+    }
+
+    .spotify-track-frame img {
+      width: 100%;
+      max-height: 250px;
+      object-fit: contain;
+      border-radius: 8px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Pulsante link Spotify (sotto immagine) */
+    .spotify-listen-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.72rem 1rem;
+      border-radius: 999px;
+      background: #1db954;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.86rem;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      box-shadow: 0 6px 16px rgba(29, 185, 84, 0.32);
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .spotify-listen-btn:hover {
+      filter: brightness(1.06);
+      transform: translateY(-1px);
+    }
+
     .modal-ticket-box {
       background: rgba(212, 175, 55, 0.14);
       border: 1.5px dashed #b88a1e;
@@ -816,7 +871,7 @@
       </button>
     </div>
 
-    <!-- Footer discreto con Modalità Anteprima -->
+    <!-- Footer discreto -->
     <footer class="w-full max-w-[780px] mx-auto mt-8 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/55 px-1">
       <p class="opened-counter-text tracking-wide">
         Finestrelle custodite: <span class="text-[#e5c158] font-semibold">0 / 27</span>
@@ -831,6 +886,7 @@
           🚪 Porta 1
         </button>
 
+        <!-- INIZIO ZONA TEST - ELIMINA PRIMA DEL 1 DICEMBRE -->
         <button
           type="button"
           class="preview-toggle-trigger px-3.5 py-2 rounded-full bg-white/10 hover:bg-white/15 border border-[#d4af37]/35 text-[#f3dc92] font-medium transition"
@@ -842,8 +898,9 @@
           type="button"
           class="reset-opened-trigger px-3 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 transition"
         >
-          Azzera
+          Azzera caselle aperte
         </button>
+        <!-- FINE ZONA TEST -->
       </div>
     </footer>
   </main>
@@ -881,15 +938,23 @@
         <div class="door-bday-leaf-left"></div>
         <div class="door-bday-leaf-right"></div>
 
-        <!-- Emblema centrale neutro con stelle e targhetta -->
+        <!-- Medaglione centrale con stella dorata e targhetta -->
         <div class="door-bday-emblem">
-          <svg class="w-20 h-20 sm:w-24 sm:h-24 drop-shadow" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <circle cx="50" cy="50" r="34" stroke="#e8c872" stroke-width="1.5" stroke-dasharray="4 4" />
-            <path d="M50 18 L54 38 L74 42 L54 46 L50 66 L46 46 L26 42 L46 38 Z" fill="#f6e29c" />
-            <circle cx="31" cy="27" r="2.2" fill="#e8c872" />
-            <circle cx="70" cy="26" r="2" fill="#e8c872" />
-            <circle cx="69" cy="64" r="2.4" fill="#e8c872" />
-            <circle cx="32" cy="63" r="1.8" fill="#e8c872" />
+          <svg class="w-20 h-20 sm:w-24 sm:h-24 drop-shadow-lg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="50" cy="50" r="40" stroke="#e8c872" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.7" />
+            <path
+              d="M50 16 L57.5 38.5 L81 39 L62.5 53.5 L69 76 L50 62.5 L31 76 L37.5 53.5 L19 39 L42.5 38.5 Z"
+              fill="url(#champagneStarGrad)"
+              stroke="#fff4cc"
+              stroke-width="1"
+            />
+            <defs>
+              <linearGradient id="champagneStarGrad" x1="20" y1="16" x2="80" y2="76" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#fff3c4" />
+                <stop offset="55%" stop-color="#e8c872" />
+                <stop offset="100%" stop-color="#b88924" />
+              </linearGradient>
+            </defs>
           </svg>
 
           <div id="door2-name-label" class="door-bday-plate">
@@ -905,57 +970,57 @@
   </section>
 
   <!-- ========================================================================
-       VISTA 4: GRIGLIA COMPLEANNO (GIORNI 26 & 27, ZERO ANTICIPAZIONI)
+       VISTA 4: GRIGLIA COMPLEANNO (26 & 27 DICEMBRE)
        ======================================================================== -->
-  <section id="view-grid-bday" class="app-view view-grid-layout" aria-label="Finestrelle 26 e 27 Dicembre">
+  <main id="view-grid-bday" class="app-view view-grid-layout" aria-label="Ultimi due giorni 26 e 27 Dicembre">
     <!-- Banner Modalità Anteprima -->
-    <div id="preview-bar-bday" class="hidden w-full max-w-[680px] mx-auto mb-5 px-4 py-2.5 rounded-xl bg-[#e8c872]/15 border border-[#e8c872]/45 text-[#f6e29c] text-xs sm:text-sm flex flex-wrap items-center justify-between gap-2">
-      <span>✨ <strong>Modalità Anteprima attiva:</strong> anche il 26 e 27 sono sbloccati.</span>
+    <div id="preview-bar-bday" class="hidden w-full max-w-[640px] mx-auto mb-5 px-4 py-2.5 rounded-xl bg-[#e8c872]/20 border border-[#e8c872]/50 text-[#f6e29c] text-xs sm:text-sm flex flex-wrap items-center justify-between gap-2">
+      <span>✨ <strong>Modalità Anteprima attiva:</strong> tutte le 27 finestrelle sono sbloccate.</span>
       <button type="button" class="reset-opened-trigger underline font-semibold hover:text-white transition py-1">
         Azzera
       </button>
     </div>
 
-    <header class="w-full max-w-[640px] mx-auto text-center mb-8 px-2">
-      <p id="cal2-eyebrow" class="text-[11px] sm:text-xs font-semibold tracking-[0.38em] uppercase text-[#e8c872] mb-2">
+    <header class="w-full max-w-[600px] mx-auto text-center mb-8 px-2">
+      <p id="cal2-eyebrow" class="text-[11px] sm:text-xs font-semibold tracking-[0.42em] uppercase text-[#e8c872] mb-2">
         U L T I M I &nbsp; D U E &nbsp; G I O R N I
       </p>
-      <h2 id="cal2-title" class="font-serif-display text-3xl sm:text-5xl font-bold text-white tracking-tight mb-3.5">
+      <h2 id="cal2-title" class="font-serif-display text-4xl sm:text-5xl font-bold text-white tracking-tight mb-3.5">
         Il gran finale
       </h2>
-      <p id="cal2-dedication" class="text-sm sm:text-base leading-relaxed text-[#f6e29c]/85 max-w-[500px] mx-auto">
+      <p id="cal2-dedication" class="text-sm sm:text-base leading-relaxed text-[#f6e29c]/85 font-normal max-w-[460px] mx-auto">
         Due ultime finestrelle custodite per te, quando tutte le altre si sono già chiuse.
       </p>
     </header>
 
-    <!-- Due finestrelle pulite (solo numero + stellina neutra) -->
-    <div id="advent-grid-bday" class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-[640px] mx-auto px-1" role="list"></div>
+    <!-- Due finestrelle dedicate al 26 e 27 Dicembre -->
+    <div id="advent-grid-bday" class="w-full max-w-[640px] mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 px-1" role="list"></div>
 
-    <!-- Navigazione di ritorno -->
-    <div class="w-full max-w-[640px] mx-auto mt-9 flex flex-wrap items-center justify-center gap-3">
+    <!-- Pulsanti di navigazione -->
+    <div class="w-full max-w-[640px] mx-auto mt-8 flex flex-wrap items-center justify-center gap-3">
       <button
         id="back-to-bday-door-btn"
         type="button"
-        class="px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/15 border border-[#e8c872]/35 text-[#f6e29c] text-xs sm:text-sm font-medium transition"
+        class="px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/15 border border-[#e8c872]/35 text-[#f6e29c] text-xs font-medium transition active:scale-95"
       >
-        ✨ Rivedi la seconda porta
+        🚪 Porta 2
       </button>
-
       <button
         id="back-to-xmas-grid-btn"
         type="button"
-        class="px-4 py-2.5 rounded-full bg-white/5 hover:bg-white/10 text-white/80 text-xs sm:text-sm font-medium transition"
+        class="px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/20 text-white/85 text-xs font-medium transition active:scale-95"
       >
         ← Torna al Calendario 1–25
       </button>
     </div>
 
-    <!-- Footer discreto con Modalità Anteprima -->
+    <!-- Footer discreto -->
     <footer class="w-full max-w-[640px] mx-auto mt-9 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/55 px-1">
       <p class="opened-counter-text tracking-wide">
         Finestrelle custodite: <span class="text-[#e8c872] font-semibold">0 / 27</span>
       </p>
 
+      <!-- INIZIO ZONA TEST - ELIMINA PRIMA DEL 1 DICEMBRE -->
       <div class="flex items-center gap-2.5">
         <button
           type="button"
@@ -968,11 +1033,12 @@
           type="button"
           class="reset-opened-trigger px-3 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 transition"
         >
-          Azzera
+          Azzera caselle aperte
         </button>
       </div>
+      <!-- FINE ZONA TEST -->
     </footer>
-  </section>
+  </main>
 
   <!-- ========================================================================
        MODALE CONTENUTO DEL GIORNO (NESSUNA ETICHETTA DI CATEGORIA)
@@ -1007,9 +1073,17 @@
         <span class="h-[1px] flex-1 bg-[#8c5a2b]"></span>
       </div>
 
-      <!-- Cornice Polaroid (visibile solo se è presente fotoUrl) -->
+      <!-- 1. Citazione canzone SOPRA immagine (visibile per i giorni Spotify) -->
+      <blockquote id="modal-spotify-quote" class="spotify-quote-box hidden"></blockquote>
+
+      <!-- 2A. Cornice Polaroid (visibile per le foto ricordo) -->
       <figure id="modal-polaroid-wrapper" class="polaroid-frame hidden">
         <img id="modal-polaroid-img" src="" alt="Un nostro ricordo insieme" />
+      </figure>
+
+      <!-- 2B. Immagine traccia Spotify AL CENTRO (visibile per le canzoni) -->
+      <figure id="modal-spotify-wrapper" class="spotify-track-frame hidden">
+        <img id="modal-spotify-img" src="" alt="Traccia Spotify" />
       </figure>
 
       <!-- Testo personalizzato -->
@@ -1017,7 +1091,20 @@
         Messaggio del giorno...
       </p>
 
-      <!-- Riquadro speciale opzionale (indizio o buono, senza etichetta di categoria) -->
+      <!-- 3. Link cliccabile SOTTO immagine (visibile per le canzoni Spotify) -->
+      <div id="modal-spotify-link-box" class="mt-4 hidden">
+        <a
+          id="modal-spotify-link"
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="spotify-listen-btn"
+        >
+          <span>🎵 Ascolta su Spotify</span>
+        </a>
+      </div>
+
+      <!-- Riquadro speciale opzionale (indizio o promemoria dal vivo) -->
       <div id="modal-extra-box" class="modal-ticket-box hidden">
         <p id="modal-extra-text" class="font-medium"></p>
       </div>
@@ -1073,41 +1160,47 @@
      * ==========================================================================
      * 2. CONTENUTI DEI 27 GIORNI (1 - 27 DICEMBRE)
      * ==========================================================================
-     * Nota: Nessuna categoria viene mostrata all'utente.
-     * Per aggiungere una foto nei giorni 2, 4, 10, 12, 16, 18 inserisci il link
-     * o il percorso dell'immagine nel campo `fotoUrl` (es. "foto/noi1.jpg").
+     * - Per le 7 Foto Ricordo: carica nella cartella principale di GitHub i file
+     *   img_primo_anno.jpg, img_cibo.jpg, img_stupida.jpg, img_mare.jpg,
+     *   img_roma.jpg, img_crociera.jpg, img_disneyland.jpg
+     *   (il sito riconosce automaticamente anche .png, .jpeg o .webp).
+     * - Per le 5 Canzoni Spotify (giorni 4, 11, 14, 16, 18):
+     *   carica img_per_favore.jpg, img_mi_sei.jpg, img_disfruto.jpg,
+     *   img_darte.jpg, img_eccoti.jpg e compila fraseCanzone + linkSpotify.
      */
     const CONTENUTI_GIORNI = [
       {
         giorno: 1,
-        titolo: "Il primo passo di questo mese",
-        fotoUrl: "",
+        titolo: "Il nostro primo regalo: questo Calendario",
+        fotoUrl: "img_primo_anno.jpg",
         messaggio:
-          "Benvenuta nel nostro dicembre. Anche se oggi non siamo vicini, volevo che la tua giornata iniziasse sapendo che il mio pensiero è già lì con te.\n\nHo lasciato qualcosa per te prima di partire...",
-        notaExtra: "🔍 Indizio: Guarda nel posto in cui tieni le tue cose più care vicino al letto!"
+          "Benvenuta nel nostro dicembre, amore mio. Il regalo del primo giorno è proprio questo piccolo mondo creato solo per noi: ogni mattina potrai aprire una nuova finestrella, fino ad arrivare al Natale e poi alla seconda porta speciale.\n\nVolevo inaugurarlo partendo da dove tutto è cominciato: dal nostro primo anno insieme.",
+        notaExtra: ""
       },
       {
         giorno: 2,
-        titolo: "Dove tutto è iniziato",
-        fotoUrl: "",
+        titolo: "I nostri momenti preferiti a tavola",
+        fotoUrl: "img_cibo.jpg",
         messaggio:
-          "Ripenso spesso ai nostri inizi, a quando ancora non sapevo che saresti diventata il mio posto preferito al mondo. Se potessi tornare indietro, ti sceglierei altre mille volte.",
+          "Uno dei miei passatempi preferiti in assoluto: mangiare qualcosa di buono insieme, chiacchierare senza guardare l'orologio e trasformare anche un pasto semplice nel momento migliore della giornata.",
         notaExtra: ""
       },
       {
         giorno: 3,
-        titolo: "Quello che amo di te",
-        fotoUrl: "",
+        titolo: "Noi senza filtri",
+        fotoUrl: "img_stupida.jpg",
         messaggio:
-          "Amo il modo in cui ti illuminano gli occhi quando parli di ciò che ti appassiona, la tua dolcezza improvvisa e il modo in cui riesci a farmi sentire a casa ovunque siamo.",
+          "La prova ufficiale che con te posso essere me stesso al 100%, fare le facce più assurde e ridere fino alle lacrime senza prendermi mai troppo sul serio.",
         notaExtra: ""
       },
       {
         giorno: 4,
-        titolo: "Meno uno per rivederci",
-        fotoUrl: "",
+        titolo: "Per favore",
+        fraseCanzone: "« Scrivi qui la frase tratta da \"Per favore\"... »",
+        spotifyImg: "img_per_favore.jpg",
+        linkSpotify: "https://open.spotify.com/",
         messaggio:
-          "Questi primi giorni lontani sono quasi finiti. Guardo questo nostro momento e conto le ore che mancano a domani per stringerti forte.",
+          "Questa canzone ha un posto speciale nel mio cuore da quando me l'hai dedicata al mio primo compleanno passato insieme. Domani finalmente ci rivediamo...",
         notaExtra: ""
       },
       {
@@ -1115,111 +1208,119 @@
         titolo: "Finalmente di nuovo insieme",
         fotoUrl: "",
         messaggio:
-          "Oggi non servono tante parole perché finalmente posso guardarti dal vivo. Ho portato una piccola dolcezza per festeggiare il fatto che sei di nuovo qui accanto a me.",
-        notaExtra: "✨ Chiedimi subito quello che ho in tasca per te!"
+          "Ieri hai ascoltato la nostra canzone sullo schermo, oggi invece puoi portarla sempre con te ovunque vai.\n\nHo preparato qualcosa di unico e creato su misura per te!",
+        notaExtra: "✨ Chiedimi subito la sorpresa che ho portato per te oggi!"
       },
       {
         giorno: 6,
-        titolo: "Un pensiero che non appassisce",
+        titolo: "Una piccola dolcezza per te",
         fotoUrl: "",
         messaggio:
-          "I fiori veri sono bellissimi, ma volevo regalarti qualcosa fatto con le mie mani che potesse restare con te nel tempo, proprio come quello che provo per te.",
-        notaExtra: "✨ Ho una sorpresa fatta a mano da consegnarti oggi!"
+          "Sabato insieme merita subito qualcosa di buono per iniziare al meglio il weekend.",
+        notaExtra: "✨ C'è un dolcetto pronto per te oggi!"
       },
       {
         giorno: 7,
-        titolo: "La nostra colonna sonora",
+        titolo: "Un altro dolce pensiero",
         fotoUrl: "",
         messaggio:
-          "Ci sono parole e melodie che, appena partono, hanno subito il tuo nome. Sei la parte più bella di ogni mia giornata.",
-        notaExtra: ""
+          "Perché una domenica passata insieme diventa ancora più dolce con una piccola coccola golosa.",
+        notaExtra: "✨ Chiedimi il dolcetto di oggi!"
       },
       {
         giorno: 8,
-        titolo: "Aria di festa insieme",
+        titolo: "Un piccolo pensiero fatto con il cuore",
         fotoUrl: "",
         messaggio:
-          "L'8 dicembre accende ufficialmente la magia delle feste, e viverla accanto a te la rende ancora più luminosa. Oggi ci concediamo una piccola coccola dolce.",
-        notaExtra: "✨ C'è una dolcezza natalizia pronta per te!"
+          "Per questo 8 dicembre volevo regalarti qualcosa di tenero fatto apposta per te, che ti ricordi ogni volta che lo guardi quanto ti voglio bene.",
+        notaExtra: "✨ Ho una sorpresa fatta a mano da consegnarti oggi!"
       },
       {
         giorno: 9,
-        titolo: "Creato apposta per te",
+        titolo: "Prima di salutarci per qualche giorno",
         fotoUrl: "",
         messaggio:
-          "Prima che inizino questi giorni in cui ci vedremo un po' meno, ho voluto realizzare qualcosa di unico, pensato e creato su misura per te, così potrai tenerlo vicino quando non ci sono.",
-        notaExtra: "✨ Oggi ho qualcosa di speciale da consegnarti dal vivo!"
+          "Visto che nei prossimi giorni ci vedremo un po' meno, oggi ci concediamo una piccola dolcezza insieme per fare scorta di energia.",
+        notaExtra: "✨ Un dolcetto speciale prima di salutarci!"
       },
       {
         giorno: 10,
-        titolo: "Un posto che parla di noi",
-        fotoUrl: "",
+        titolo: "Un pizzico d'estate al mare",
+        fotoUrl: "img_mare.jpg",
         messaggio:
-          "Ogni luogo in cui siamo stati insieme ha conservato un pezzetto delle nostre risate. Non vedo l'ora di aggiungerne tanti altri alla nostra mappa.",
+          "Un po' di sole, salsedine e spensieratezza per scaldare questa giornata di dicembre mentre aspettiamo di rivederci.",
         notaExtra: ""
       },
       {
         giorno: 11,
-        titolo: "Sogni ad occhi aperti",
-        fotoUrl: "",
+        titolo: "Mi sei scoppiato",
+        fraseCanzone: "« Scrivi qui la frase tratta da \"Mi sei scoppiato\"... »",
+        spotifyImg: "img_mi_sei.jpg",
+        linkSpotify: "https://open.spotify.com/",
         messaggio:
-          "Quando immagino il futuro, i viaggi da fare e i traguardi da raggiungere, la costante più bella è sempre la stessa: esserci insieme.",
+          "Ci sono canzoni che raccontano esattamente cosa succede quando entri nella vita di qualcuno e la stravolgi in meglio.",
         notaExtra: ""
       },
       {
         giorno: 12,
-        titolo: "Piccoli istanti indimenticabili",
-        fotoUrl: "",
+        titolo: "Noi a Roma",
+        fotoUrl: "img_roma.jpg",
         messaggio:
-          "Anche a distanza, basta un messaggio o un vecchio ricordo condiviso per strapparmi un sorriso vero in mezzo alla giornata.",
+          "Camminare per Roma con te rende speciale anche il vicolo più nascosto. Uno dei ricordi che porto sempre con me.",
         notaExtra: ""
       },
       {
         giorno: 13,
-        titolo: "Un abbraccio a distanza",
+        titolo: "Un pensiero per te",
         fotoUrl: "",
         messaggio:
-          "Se oggi senti un po' di stanchezza o nostalgia, chiudi gli occhi un secondo e immagina di avere le mie braccia intorno a te.",
+          "[SCRIVI QUI LA TUA BELLA FRASE PER LEI]",
         notaExtra: ""
       },
       {
         giorno: 14,
-        titolo: "A metà del cammino",
-        fotoUrl: "",
+        titolo: "Disfruto",
+        fraseCanzone: "« Scrivi qui la frase tratta da \"Disfruto\"... »",
+        spotifyImg: "img_disfruto.jpg",
+        linkSpotify: "https://open.spotify.com/",
         messaggio:
-          "Siamo esattamente a metà di questi giorni lontani, ma non sei davvero sola: qualche giorno fa ho nascosto parole scritte a mano tutte per te.",
-        notaExtra: "🔍 Adesso puoi aprire la busta sigillata che avevo lasciato per oggi!"
+          "Anche a distanza, basta chiudere gli occhi e ascoltare questa melodia per sentirti subito qui accanto a me.",
+        notaExtra: ""
       },
       {
         giorno: 15,
-        titolo: "La mia persona",
-        fotoUrl: "",
+        titolo: "In mezzo al mare, insieme",
+        fotoUrl: "img_crociera.jpg",
         messaggio:
-          "Sei la prima persona a cui voglio raccontare una bella notizia e l'unica da cui vorrei correre alla fine di qualsiasi giornata.",
+          "La nostra crociera: svegliarsi ogni giorno in un posto nuovo con la persona giusta accanto. Una delle avventure più belle di sempre.",
         notaExtra: ""
       },
       {
         giorno: 16,
-        titolo: "Quella risata incontenibile",
-        fotoUrl: "",
+        titolo: "Darte un beso",
+        fraseCanzone: "« Scrivi qui la frase tratta da \"Darte un beso\"... »",
+        spotifyImg: "img_darte.jpg",
+        linkSpotify: "https://open.spotify.com/",
         messaggio:
-          "Ripensare ai momenti in cui non riuscivamo nemmeno a parlare da quanto stavamo ridendo resta una delle mie medicine preferite.",
+          "Un ritmo che mette subito allegria e la voglia di ballare insieme, contando i giorni che mancano per riabbracciarti.",
         notaExtra: ""
       },
       {
         giorno: 17,
-        titolo: "Il conto alla rovescia",
-        fotoUrl: "",
+        titolo: "La magia di Disneyland",
+        fotoUrl: "img_disneyland.jpg",
         messaggio:
-          "Manca pochissimo ormai: l'attesa sta per finire e presto torneremo a viverci ogni singolo giorno senza più schermi di mezzo.",
+          "Tornare bambini insieme in uno dei posti più magici del mondo. Con te ogni giornata riesce ad avere un pizzico di magia in più.",
         notaExtra: ""
       },
       {
         giorno: 18,
-        titolo: "Alla vigilia del nostro giorno",
-        fotoUrl: "",
+        titolo: "Eccoti",
+        fraseCanzone: "« Scrivi qui la frase tratta da \"Eccoti\"... »",
+        spotifyImg: "img_eccoti.jpg",
+        linkSpotify: "https://open.spotify.com/",
         messaggio:
-          "Domani è una data che porto nel cuore. Guardo noi due qui e sono grato per ogni singolo giorno passato al tuo fianco.",
+          "Alla vigilia del nostro giorno, questa canzone dice tutto quello che provo sapendo che domani finalmente sarai di nuovo qui con me.",
         notaExtra: ""
       },
       {
@@ -1240,27 +1341,27 @@
       },
       {
         giorno: 21,
-        titolo: "La notte più lunga, la luce più bella",
+        titolo: "Il solstizio d'inverno con te",
         fotoUrl: "",
         messaggio:
-          "Oggi è il solstizio d'inverno: fuori fa freddo, ma basta starti accanto per avere tutto il calore del mondo.",
+          "Oggi è il giorno più corto dell'anno: fuori fa freddo, ma basta starti accanto per avere tutto il calore del mondo.",
         notaExtra: "✨ C'è un'altra piccola coccola dolce per te oggi!"
       },
       {
         giorno: 22,
-        titolo: "A tre passi dal Natale",
+        titolo: "Fiori che durano per sempre",
         fotoUrl: "",
         messaggio:
-          "Tra luci, vetrine e corse dell'ultimo minuto, fermarmi un attimo con te resta l'unico momento che conta davvero.",
-        notaExtra: "✨ Oggi si addolcisce ancora un po' l'attesa!"
+          "A tre passi dal Natale volevo regalarti qualcosa di speciale disegnato dalle mie mani, che non appassisca mai.",
+        notaExtra: "✨ Ho una sorpresa fatta a mano da consegnarti oggi!"
       },
       {
         giorno: 23,
-        titolo: "Parole scritte col cuore",
+        titolo: "Quasi alla Vigilia",
         fotoUrl: "",
         messaggio:
-          "Alla vigilia delle feste volevo affidare alla carta tutto quello che a volte a voce non riesco a esprimere fino in fondo.",
-        notaExtra: "✨ Ho una lettera scritta a mano da consegnarti oggi!"
+          "Tra luci, corse dell'ultimo minuto e atmosfera natalizia, fermarmi un attimo con te e addolcire la giornata resta il momento migliore.",
+        notaExtra: "✨ Un dolcetto pre-vigilia tutto per te!"
       },
       {
         giorno: 24,
@@ -1300,54 +1401,54 @@
      * ==========================================================================
      * 3. DISPOSIZIONE GRIGLIA 12 COLONNE (5 DIMENSIONI ESATTE, ZERO BUCHI)
      * ==========================================================================
-     * - size-small        (3x2)  -> 12 caselle: 2, 3, 4, 7, 10, 11, 12, 13, 15, 16, 17, 18
-     * - size-small-medium (4x2)  -> 6 caselle:  5, 8, 20, 21, 22, 24
-     * - size-medium       (6x2)  -> 5 caselle:  1, 6, 9, 14, 23
-     * - size-medium-large (9x4)  -> 1 casella:  19 (affiancata a 17 sopra 18 a sinistra 3x4)
-     * - size-large-hero   (12x4) -> 1 casella:  25
+     * - size-small        (3x2)  -> Foto/Ricordi (2,3,10,12,15,17), Canzoni (4,11,14,16,18), Bella frase (13)
+     * - size-small-medium (4x2)  -> Dolcetti (6, 7, 9, 20, 21, 23) + Vigilia (24 in coppia col 22)
+     * - size-medium       (6x2)  -> Inaugurazione (1), Stampa 3D Spotify (5), Pupazzetto 3D (8), Mazzo fiori 3D (22)
+     * - size-medium-large (9x4)  -> Peluche Mesiversario (19) accanto a 17 sopra 18
+     * - size-large-hero   (12x4) -> Buon Natale! (25)
      */
     const LAYOUT_GRIGLIA_XMAS = [
-      // Riga 1-2 (3 + 6 + 3 = 12)
-      { day: 7,  size: "size-small",        theme: "theme-cream" },
+      // Riga 1 (6 + 3 + 3 = 12)
       { day: 1,  size: "size-medium",       theme: "theme-red" },
-      { day: 2,  size: "size-small",        theme: "theme-sand" },
+      { day: 2,  size: "size-small",        theme: "theme-cream" },
+      { day: 3,  size: "size-small",        theme: "theme-sand" },
 
-      // Riga 3-4 (4 + 4 + 4 = 12)
-      { day: 5,  size: "size-small-medium", theme: "theme-sand" },
-      { day: 8,  size: "size-small-medium", theme: "theme-choco" },
-      { day: 20, size: "size-small-medium", theme: "theme-cream" },
-
-      // Riga 5-6 (3 + 3 + 6 = 12)
-      { day: 3,  size: "size-small",        theme: "theme-cream" },
-      { day: 4,  size: "size-small",        theme: "theme-red" },
-      { day: 6,  size: "size-medium",       theme: "theme-sand" },
-
-      // Riga 7-8 (6 + 3 + 3 = 12)
-      { day: 9,  size: "size-medium",       theme: "theme-choco" },
+      // Riga 2 (3 + 6 + 3 = 12)
+      { day: 4,  size: "size-small",        theme: "theme-sand" },
+      { day: 5,  size: "size-medium",       theme: "theme-choco" },
       { day: 10, size: "size-small",        theme: "theme-cream" },
-      { day: 11, size: "size-small",        theme: "theme-red" },
 
-      // Riga 9-10 (4 + 4 + 4 = 12)
-      { day: 21, size: "size-small-medium", theme: "theme-red" },
-      { day: 22, size: "size-small-medium", theme: "theme-cream" },
-      { day: 24, size: "size-small-medium", theme: "theme-sand" },
+      // Riga 3 (4 + 4 + 4 = 12)
+      { day: 6,  size: "size-small-medium", theme: "theme-cream" },
+      { day: 7,  size: "size-small-medium", theme: "theme-red" },
+      { day: 9,  size: "size-small-medium", theme: "theme-sand" },
 
-      // Riga 11-12 (3 + 6 + 3 = 12)
-      { day: 12, size: "size-small",        theme: "theme-sand" },
-      { day: 14, size: "size-medium",       theme: "theme-red" },
-      { day: 13, size: "size-small",        theme: "theme-cream" },
+      // Riga 4 (6 + 3 + 3 = 12)
+      { day: 8,  size: "size-medium",       theme: "theme-red" },
+      { day: 11, size: "size-small",        theme: "theme-cream" },
+      { day: 12, size: "size-small",        theme: "theme-choco" },
 
-      // Riga 13-14 (3 + 3 + 6 = 12)
-      { day: 15, size: "size-small",        theme: "theme-choco" },
+      // Riga 5 (3 + 3 + 3 + 3 = 12)
+      { day: 13, size: "size-small",        theme: "theme-sand" },
+      { day: 14, size: "size-small",        theme: "theme-cream" },
+      { day: 15, size: "size-small",        theme: "theme-red" },
       { day: 16, size: "size-small",        theme: "theme-sand" },
-      { day: 23, size: "size-medium",       theme: "theme-cream" },
 
-      // Riga 15-18 (Sinistra 3x4 = 17 sopra 18 | Destra 9x4 = 19)
+      // Righe 6-7 (Sinistra 3x4 = 17 sopra 18 | Destra 9x4 = 19)
       { day: 17, size: "size-small",        theme: "theme-cream" },
       { day: 19, size: "size-medium-large", theme: "theme-red" },
-      { day: 18, size: "size-small",        theme: "theme-sand" },
+      { day: 18, size: "size-small",        theme: "theme-choco" },
 
-      // Riga 19-22 (12x4 = 25)
+      // Riga 8 (4 + 4 + 4 = 12)
+      { day: 20, size: "size-small-medium", theme: "theme-sand" },
+      { day: 21, size: "size-small-medium", theme: "theme-cream" },
+      { day: 23, size: "size-small-medium", theme: "theme-red" },
+
+      // Riga 9 (6 + 6 = 12)
+      { day: 22, size: "size-medium",       theme: "theme-choco" },
+      { day: 24, size: "size-medium",       theme: "theme-sand" },
+
+      // Righe 10-11 (12x4 = 25)
       { day: 25, size: "size-large-hero",   theme: "theme-gold-hero" }
     ];
 
@@ -1363,7 +1464,8 @@
      */
     const STORAGE_KEY_OPENED = "avvento_romantico_27_opened_v2";
     let openedDays = new Set();
-    let previewMode = false;
+    // Supporta anche il parametro URL ?test=1 oltre al pulsante nella zona test
+    let previewMode = new URLSearchParams(window.location.search).get("test") === "1";
     let soundEnabled = false;
     let audioCtx = null;
     let toastTimeout = null;
@@ -1401,6 +1503,43 @@
         return dayNumber <= date;
       }
       return false;
+    }
+
+    /**
+     * Carica un'immagine provando in automatico anche .png, .jpeg, .webp e .JPG
+     * se il file caricato su GitHub ha un'estensione diversa da .jpg.
+     */
+    function setImageWithFallback(imgEl, wrapperEl, filename) {
+      if (!filename || filename.trim() === "") {
+        wrapperEl.classList.add("hidden");
+        imgEl.removeAttribute("src");
+        return;
+      }
+
+      const cleanName = filename.trim();
+      const baseName = cleanName.replace(/\.[^/.]+$/, "");
+      const candidates = [
+        cleanName,
+        `${baseName}.png`,
+        `${baseName}.jpeg`,
+        `${baseName}.webp`,
+        `${baseName}.JPG`,
+        `${baseName}.PNG`
+      ];
+
+      let index = 0;
+      wrapperEl.classList.remove("hidden");
+
+      imgEl.onerror = () => {
+        index += 1;
+        if (index < candidates.length) {
+          imgEl.src = candidates[index];
+        } else {
+          wrapperEl.classList.add("hidden");
+        }
+      };
+
+      imgEl.src = candidates[0];
     }
 
     /**
@@ -1514,20 +1653,25 @@
      * ==========================================================================
      */
     function applyCustomTexts() {
-      document.getElementById("door1-eyebrow").textContent = CONFIGURAZIONE.porta1Sopra;
-      document.getElementById("door1-headline").textContent = CONFIGURAZIONE.porta1Titolo;
-      document.getElementById("door1-name-label").textContent = CONFIGURAZIONE.nomeSullaPorta;
-      document.getElementById("cal1-eyebrow").textContent = CONFIGURAZIONE.cal1Sopra;
-      document.getElementById("cal1-title").textContent = CONFIGURAZIONE.cal1Titolo;
-      document.getElementById("cal1-dedication").textContent = CONFIGURAZIONE.cal1Dedica;
-      document.getElementById("cal1-signature").textContent = CONFIGURAZIONE.cal1Firma;
+      const setText = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      };
 
-      document.getElementById("door2-eyebrow").textContent = CONFIGURAZIONE.porta2Sopra;
-      document.getElementById("door2-headline").textContent = CONFIGURAZIONE.porta2Titolo;
-      document.getElementById("door2-name-label").textContent = CONFIGURAZIONE.porta2Targhetta;
-      document.getElementById("cal2-eyebrow").textContent = CONFIGURAZIONE.cal2Sopra;
-      document.getElementById("cal2-title").textContent = CONFIGURAZIONE.cal2Titolo;
-      document.getElementById("cal2-dedication").textContent = CONFIGURAZIONE.cal2Dedica;
+      setText("door1-eyebrow", CONFIGURAZIONE.porta1Sopra);
+      setText("door1-headline", CONFIGURAZIONE.porta1Titolo);
+      setText("door1-name-label", CONFIGURAZIONE.nomeSullaPorta);
+      setText("cal1-eyebrow", CONFIGURAZIONE.cal1Sopra);
+      setText("cal1-title", CONFIGURAZIONE.cal1Titolo);
+      setText("cal1-dedication", CONFIGURAZIONE.cal1Dedica);
+      setText("cal1-signature", CONFIGURAZIONE.cal1Firma);
+
+      setText("door2-eyebrow", CONFIGURAZIONE.porta2Sopra);
+      setText("door2-headline", CONFIGURAZIONE.porta2Titolo);
+      setText("door2-name-label", CONFIGURAZIONE.porta2Targhetta);
+      setText("cal2-eyebrow", CONFIGURAZIONE.cal2Sopra);
+      setText("cal2-title", CONFIGURAZIONE.cal2Titolo);
+      setText("cal2-dedication", CONFIGURAZIONE.cal2Dedica);
     }
 
     function updateCounters() {
@@ -1652,19 +1796,38 @@
       document.getElementById("modal-title").textContent = content.titolo;
       document.getElementById("modal-body").textContent = content.messaggio;
 
-      // Foto Polaroid (mostrata solo se fotoUrl è valorizzato e valido)
-      const polaroidWrap = document.getElementById("modal-polaroid-wrapper");
-      const polaroidImg = document.getElementById("modal-polaroid-img");
-      if (content.fotoUrl && content.fotoUrl.trim() !== "") {
-        polaroidImg.src = content.fotoUrl.trim();
-        polaroidImg.onerror = () => polaroidWrap.classList.add("hidden");
-        polaroidWrap.classList.remove("hidden");
+      // 1. Citazione canzone SOPRA immagine Spotify
+      const quoteBox = document.getElementById("modal-spotify-quote");
+      if (content.fraseCanzone && content.fraseCanzone.trim() !== "") {
+        quoteBox.textContent = content.fraseCanzone.trim();
+        quoteBox.classList.remove("hidden");
       } else {
-        polaroidWrap.classList.add("hidden");
-        polaroidImg.removeAttribute("src");
+        quoteBox.classList.add("hidden");
+        quoteBox.textContent = "";
       }
 
-      // Nota extra / indizio senza etichetta di categoria
+      // 2A. Foto Polaroid (solo per i ricordi fotografici)
+      const polaroidWrap = document.getElementById("modal-polaroid-wrapper");
+      const polaroidImg = document.getElementById("modal-polaroid-img");
+      setImageWithFallback(polaroidImg, polaroidWrap, content.fotoUrl || "");
+
+      // 2B. Immagine traccia Spotify AL CENTRO (solo per le canzoni)
+      const spotifyWrap = document.getElementById("modal-spotify-wrapper");
+      const spotifyImg = document.getElementById("modal-spotify-img");
+      setImageWithFallback(spotifyImg, spotifyWrap, content.spotifyImg || "");
+
+      // 3. Pulsante link Spotify SOTTO immagine
+      const spotifyLinkBox = document.getElementById("modal-spotify-link-box");
+      const spotifyLinkEl = document.getElementById("modal-spotify-link");
+      if (content.linkSpotify && content.linkSpotify.trim() !== "") {
+        spotifyLinkEl.href = content.linkSpotify.trim();
+        spotifyLinkBox.classList.remove("hidden");
+      } else {
+        spotifyLinkBox.classList.add("hidden");
+        spotifyLinkEl.href = "#";
+      }
+
+      // Nota extra / promemoria dal vivo senza etichetta di categoria
       const extraBox = document.getElementById("modal-extra-box");
       const extraText = document.getElementById("modal-extra-text");
       if (content.notaExtra && content.notaExtra.trim() !== "") {
@@ -1770,21 +1933,26 @@
       const barXmas = document.getElementById("preview-bar-xmas");
       const barBday = document.getElementById("preview-bar-bday");
 
+      function syncPreviewUI() {
+        previewTriggers.forEach((b) => {
+          if (previewMode) {
+            b.textContent = "🔓 Anteprima Attiva (Disattiva)";
+            b.classList.add("bg-[#d4af37]/25", "border-[#d4af37]");
+          } else {
+            b.textContent = "Modalità Anteprima (Test)";
+            b.classList.remove("bg-[#d4af37]/25", "border-[#d4af37]");
+          }
+        });
+        barXmas.classList.toggle("hidden", !previewMode);
+        barBday.classList.toggle("hidden", !previewMode);
+      }
+
+      syncPreviewUI();
+
       previewTriggers.forEach((btn) => {
         btn.addEventListener("click", () => {
           previewMode = !previewMode;
-          previewTriggers.forEach((b) => {
-            if (previewMode) {
-              b.textContent = "🔓 Anteprima Attiva (Disattiva)";
-              b.classList.add("bg-[#d4af37]/25", "border-[#d4af37]");
-            } else {
-              b.textContent = "Modalità Anteprima (Test)";
-              b.classList.remove("bg-[#d4af37]/25", "border-[#d4af37]");
-            }
-          });
-
-          barXmas.classList.toggle("hidden", !previewMode);
-          barBday.classList.toggle("hidden", !previewMode);
+          syncPreviewUI();
 
           showToast(
             previewMode
